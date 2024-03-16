@@ -46,6 +46,7 @@ html, body {
 @media print {
     @page {
         margin-top: 1.5cm;
+        margin-bottom: 1cm;
     }
     .printable-table {
         display: block;

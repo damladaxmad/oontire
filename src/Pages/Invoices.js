@@ -127,7 +127,7 @@ const TransactionForm = () => {
 
     return (
         <div style = {{background: "white", display: "flex", padding: "20px",
-        width: "60%", margin: "auto", borderRadius: "10px", alignItems: "center", justifyContent: "center"}}>
+        width: "50%", margin: "auto", borderRadius: "10px", alignItems: "center", justifyContent: "center"}}>
             <form
                 onSubmit={formik.handleSubmit}
                 style={{
@@ -140,7 +140,7 @@ const TransactionForm = () => {
                 <Typography style={{
                     fontSize: "22px", fontWeight: "bold",
                     marginBottom: "5px"
-                }}> Invoice Form</Typography>
+                }}> Invoices Form</Typography>
     
     <Select
                     placeholder="Select Customer"
@@ -151,10 +151,11 @@ const TransactionForm = () => {
                     styles={{
                         control: (styles, { isDisabled }) => ({
                           ...styles,
-                          border: "1px solid lightGrey",
+                          border: "1px solid grey",
                           height: "45px",
                           borderRadius: "5px",
-                          width: "300px",
+                          fontWeight: "bold",
+                          width: "340px",
                           minHeight: "28px",
                           ...(isDisabled && { cursor: "not-allowed" }),
                         })
@@ -172,7 +173,7 @@ const TransactionForm = () => {
                             onBlur={formik.handleBlur}
                             value={formik.values[a.name]}
                             style={{
-                                width: "300px",
+                                width: "340px",
                                 height: "45px",
                                 padding: "15px",
                                 fontSize: "16px",
@@ -190,7 +191,8 @@ const TransactionForm = () => {
                 <CustomButton bgColor={constants.pColor}
                     disabled={disabled}
                     text="XAREY"
-                    type="submit" width="300px"
+                    type="submit" width="340px"
+                    style={{marginTop: "8px"}}
                 />
 
 

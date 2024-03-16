@@ -1,7 +1,7 @@
 import React from 'react';
 import MaterialTable from 'material-table';
 import { Typography } from '@material-ui/core';
-import profile from "../../assets/images/blueProfile.webp";
+import logo from "../../assets/images/logo.png";
 import { MdKeyboardArrowRight } from 'react-icons/md';
 import "./PrintableTable.css"
 import { useSelector } from 'react-redux';
@@ -16,12 +16,12 @@ const PrintableTableComponent = ({reportTitle, columns, data, imageUrl, children
             <div style={{ display: "flex", flexDirection: "row", width: "100%", justifyContent: "space-between" }}>
                 <div>
                     <Typography style={{ fontSize: "20px", fontWeight: "bold" }}> {business?.businessName}</Typography>
-                    <Typography style={{ fontSize: "18px" }}> bakaaro - {business?.businessNumber}</Typography>
+                    <Typography style={{ fontSize: "18px" }}> {business?.businessLocation} - {business?.businessNumber}</Typography>
                 </div>
 
                 <div style={{ width: "100px", height: "100px", background: "transparent" }}>
                     <img
-                        src={imageUrl || profile}
+                        src={business?.logoUrl || logo}
                         style={{
                             width: "100%",
                             height: "100%",

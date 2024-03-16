@@ -9,7 +9,7 @@ const StockTable = (props) => {
   const [way, setWay] = useState(props.way);
 
   const handleClick = (
-    event: React.MouseEvent<HTMLButtonElement>,
+   event,
     instance
   ) => {
     setInstance(instance);

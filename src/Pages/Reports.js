@@ -3,6 +3,7 @@ import { constants } from "../Helpers/constantsFile";
 import { Typography } from "@material-ui/core";
 import PersonalReport from "../containers/reports/PersonalReports";
 import StockSummary from "../containers/reports/StockSummary";
+import InvoicingReport from "../containers/reports/InvoicingReport";
 
 export default function Reports() {
   const [currentTab, setCurrentTab] = useState(0)
@@ -52,7 +53,7 @@ export default function Reports() {
             borderRadius: '50px',
             border: `1px solid ${constants.pColor}`
           }}>
-          Stuff
+        By Area
         </div>
         <div
           onClick={() => handleTabChange(2)}
@@ -74,6 +75,7 @@ export default function Reports() {
       </div>
 
       {currentTab == 0 && <PersonalReport name = "customers" type = "Customers"/>}
+      {currentTab == 1 && <InvoicingReport name = "customers" type = "Invoicing"/>}
       </div>
     )
   }

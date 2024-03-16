@@ -119,7 +119,7 @@ const Transactions = ({ instance, client, url, hideTransactions, }) => {
             },
             cellStyle: { border: "none" },
         },
-        { title: "User", field: "user", render: (data)=> <p> {data.user.name}</p> ,
+        { title: "User", field: "user", render: (data)=> <p> {data?.user?.name}</p> ,
         cellStyle: { border: "none" }, width: "20%" },
         {
             title: "Debit", field: "debit",

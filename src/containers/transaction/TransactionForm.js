@@ -80,7 +80,7 @@ const TransactionForm = ({ type, update, instance, transaction, client, hideModa
     const validate = (values) => {
         const errors = {};
 
-        if (!values.aqrisHore && type == "deen") {
+        if (!values.aqrisHore && type == "deen" && values.aqrisHore !== 0) {
             errors.aqrisHore = "Field is Required";
         }
         if (!values.aqrisDanbe && type == "deen") {

@@ -140,7 +140,7 @@ hideModal, onUpdate}) => {
         onSubmit={formik.handleSubmit}
         style={{ display: "flex", gap: "16px", justifyContent: "center",
       flexDirection: "row", alignItems: "center",
-    flexWrap: "wrap"}}
+    flexWrap: "wrap", marginBottom: "12px"}}
       >
         {filteredFields?.map((a, index) => (
           <div key = {index}>
@@ -210,7 +210,7 @@ hideModal, onUpdate}) => {
             isDisabled={disabled}
           />
 
-<Select
+{name !== "User" && <Select
             placeholder='Select zone'
             styles={{
               control: (styles, { isDisabled }) => ({
@@ -253,7 +253,7 @@ hideModal, onUpdate}) => {
             onChange={(selectedOption) => formik.setFieldValue("zone", selectedOption ? selectedOption.value : null)}
             isClearable={true} 
             isDisabled={disabled}
-          />
+          />}
 
        <CustomButton 
        disabled={disabled}
@@ -261,7 +261,7 @@ hideModal, onUpdate}) => {
        width = "250px"
        bgColor={constants.pColor}
        text = {update ? `Update ${name}` : `Create ${name}`}
-       style = {{marginBottom: "8px"}}
+      //  style = {{marginBottom: "8px"}}
        />
       </form>
 

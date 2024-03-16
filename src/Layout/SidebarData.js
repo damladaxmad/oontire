@@ -2,7 +2,8 @@ import React from 'react';
 import DashboardIcon from "@material-ui/icons/Dashboard";
 import GroupIcon from "@material-ui/icons/Group";
 import { MdOutlineAdminPanelSettings, MdOutlineFileDownload, MdSettings, } from 'react-icons/md';
-import { HiOutlineDocumentReport } from "react-icons/hi";
+import { HiOutlineDocumentReport, HiOutlineNewspaper } from "react-icons/hi";
+import { BiMessageDetail } from 'react-icons/bi';
 
 export const SidebarData = [
   {
@@ -17,6 +18,21 @@ export const SidebarData = [
     path: "/customers",
   },
   {
+    text: 'Invoices',
+    path: '/invoices',
+    icon: <HiOutlineNewspaper    style={{fontSize: "20px", }} />
+  },
+  {
+    text: 'Zone Setup',
+    path: '/zones',
+    icon: <MdSettings   style={{fontSize: "20px", }} />
+  },
+  {
+    text: 'Send SMS',
+    path: '/sms',
+    icon: <BiMessageDetail   style={{fontSize: "20px", }} />
+  },
+  {
     text: "Reports",
     icon: <HiOutlineDocumentReport   style={{fontSize: "20px",}} />,
     path: "/reports",
@@ -25,16 +41,6 @@ export const SidebarData = [
     text: "Adminstration",
     icon: <MdOutlineAdminPanelSettings  style={{fontSize: "20px",}} />,
     path: "/adminstration",
-  },
-  {
-    text: 'Zone Setup',
-    path: '/zones',
-    icon: <MdSettings   style={{fontSize: "20px", }} />
-  },
-  {
-    text: 'Invoices',
-    path: '/invoices',
-    icon: <MdSettings    style={{fontSize: "20px", }} />
   },
   {
     text: 'Import Data',

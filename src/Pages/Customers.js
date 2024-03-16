@@ -60,7 +60,7 @@ export default function Customers() {
   });
 
   const columns = [
-    { title: "Full Name", field: "name", width: "24%" },
+    { title: "Full Name", field: "name", width: "84%" },
     { title: "Phone Number", field: "phone" },
     { title: "Area", field: "area", render: (data) => <p>{data?.area?.areaName}</p> },
     { title: "Zone", field: "area", render: (data) => <p>{data?.zone?.zoneName}</p> },

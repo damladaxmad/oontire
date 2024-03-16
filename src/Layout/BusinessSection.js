@@ -10,7 +10,7 @@ import { constants } from "../Helpers/constantsFile";
 
 const subDivStyle = {
     display: "flex", background: constants.businnesColor, borderRadius: "10px",
-    flexDirection: "row", padding: "10px", width: "90%", cursor: "pointer",
+    flexDirection: "row", padding: "10px", width: "90%", 
     gap: "10px", alignItems: "center", margin: "auto",
     marginLeft: "11px", justifyContent:"space-between"
 }
@@ -38,7 +38,7 @@ export default function BusinessSection() {
                 aria-controls={open ? 'fade-menu' : undefined}
                 aria-haspopup="true"
                 aria-expanded={open ? 'true' : undefined}
-                onClick={handleClick}
+                // onClick={handleClick}
             style={subDivStyle}>
 
                 <Avatar
@@ -47,7 +47,7 @@ export default function BusinessSection() {
                     sx={{ width: 33, height: 33 }}
                 >
                     <img
-                        src={logo}
+                        src={business?.logoUrl || logo}
                         style={{
                             width: "100%",
                             height: "100%",
@@ -57,7 +57,7 @@ export default function BusinessSection() {
 
                 <div style={{ display: "flex", flexDirection: "column", }}>
                     <Typography style={{ fontSize: "13px", fontWeight: "bold", color: "white" }}> {business?.businessName}</Typography>
-                    <Typography style={{ fontSize: "13px", color: constants.businessSubText }}> {business?.businessNumber || "252 616549198"}</Typography>
+                    <Typography style={{ fontSize: "13px", color: constants.businessSubText }}> {business?.businessLocation} - {business?.businessNumber || "252 616549198"}</Typography>
                 </div>
 
                 <RiIcons.RiArrowDownSFill style={{ fontSize: "20px",  color: "white" }} />,

@@ -14,13 +14,13 @@ export default function LatestTransactions() {
     const token = useSelector(state => state.login?.token);
 
     const fetchSales = () => {
-        axios.get(`https://oontire-api.onrender.com/api/client/v1/transactions/${business?._id}?startDate=2024-02-01&endDate=2024-03-15`, {
+        axios.get(`https://oontire-api.onrender.com/api/client/v1/transactions/get-business-transactions/65cb0bc4fa1d83bbda97dc30?customer=notnull&startDate=2024-03-01&endDate=2024-03-16`, {
             headers: {
                 "authorization": token
             }
         }).then(res => {
             console.log(res.data?.data)
-            setSales(res?.data?.data?.sales || []); // Set sales or empty array if no data
+            setSales(res?.data?.data?.transactions || []);
         }).catch(error => {
             console.error("Error fetching sales:", error);
         }).finally(() => {
@@ -64,23 +64,24 @@ function Transaction({ data, index }) {
     return (
         <div style={{
             display: "flex", flexDirection: "row", width: "100%",
-            background: index === 0 ? constants.pColor : "white", borderRadius: "8px", padding: "15px 20px",
+            background:  "white", borderRadius: "8px", padding: "15px 20px",
             alignItems: "center", justifyContent: "space-between",
-            color: index === 0 ? "white" : "black", position: "relative"
+            color:  "black", position: "relative"
         }}>
 
             <div style={{
                 position: 'absolute', top: "20%", bottom: "20%", left: 0, width: '6px',
-                backgroundColor: index === 0 ? "white" : '#C8C8C8',
+                backgroundColor: data?.transactionType === "payment" ? constants.pColor : '#C8C8C8',
                 borderRadius: "0px 6px 6px 0px"
             }}></div>
 
-            <div style={{ display: "flex", flexDirection: "column", }}>
-                <Typography style={{ fontSize: "15px", fontWeight: "bold" }}> Products ({data.products?.length})</Typography>
-                <Typography style={{ fontSize: "14px", color: index === 0 ? constants.colorSubText : "#B4B4B4" }}> {moment(data.date).format("YYYY-MM-DD")}</Typography>
+            <div style={{ display: "flex", flexDirection: "column",  flex: 1  }}>
+                <Typography style={{ fontSize: "15px", fontWeight: "bold",}}> {data?.customer.name.substring(0, 17)}
+              {data?.customer.name.length <= 17 ? null : "..."}</Typography>
+                <Typography style={{ fontSize: "14px", color: "#B4B4B4" }}> {moment(data.date).format("YYYY-MM-DD")}</Typography>
             </div>
-            <Typography style={{ fontSize: "15px" }}> {data.paymentType}</Typography>
-            <Typography style={{ fontSize: "15px" }}> ${data.total}</Typography>
+            <Typography style={{ fontSize: "15px", flex: 0.5,  }}> {data.transactionType}</Typography>
+            <Typography style={{ fontSize: "15px", flex: 0.1 }}> ${data.transactionType == "charge" ? data.debit : data.credit}</Typography>
         </div>
     )
 }

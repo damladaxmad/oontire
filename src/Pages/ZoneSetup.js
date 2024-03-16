@@ -20,9 +20,9 @@ export default function CustomerList() {
     const customers = useSelector(state => state.customers.customers);
     const areas = useSelector(state => state.areas.areas); // Fetch areas from Redux store
     const zones = useSelector(state => state.zones.zones); // Fetch zones from Redux store
-    const areaUrl = `${constants.baseUrl}/business-areas/get-business-areas/${business?._id}`
     const zoneUrl = `${constants.baseUrl}/business-zones/get-business-zones/${business?._id}`
     const customerUrl = `${constants.baseUrl}/customers/get-business-customers/${business?._id}`
+    const areaUrl = `${constants.baseUrl}/business-areas/get-business-areas/${business?._id}`
     
     useReadData(
       areaUrl,

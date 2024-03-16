@@ -6,6 +6,7 @@ import Adminstration from "./Pages/Adminstration"
 import Import from "./Pages/Import";
 import ZoneSetup from "./Pages/ZoneSetup";
 import Invoices from "./Pages/Invoices";
+import SendSMS from "./Pages/SendSMS";
 
 export const pages = [
         <Route path="/dashboard" element={<Dashboard />} />,
@@ -13,6 +14,7 @@ export const pages = [
         <Route path="/reports" element={<Reports />} />,
         <Route path="/adminstration" element={<Adminstration />} />,
         <Route path="/zones" element={<ZoneSetup />} />,
+        <Route path="/sms" element={<SendSMS />} />,
         <Route path="/invoices" element={<Invoices />} />,
         <Route path="/import" element={<Import />} />,
 ]

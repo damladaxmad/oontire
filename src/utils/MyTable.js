@@ -57,6 +57,9 @@ const MyTable = (props) => {
                   { props.data.houseNo}
                 </p>
                 <p style={{ margin: "0px", width: "21%", textAlign: "end" }}>
+                  { props.data.aqrisHore}
+                </p>
+                <p style={{ margin: "0px", width: "21%", textAlign: "end" }}>
                   {constants.moneySign}{props.data.balance?.toFixed(2)}
                 </p>
               </div>
