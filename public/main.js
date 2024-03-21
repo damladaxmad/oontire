@@ -57,8 +57,8 @@ app.on('ready', () => {
   splash.loadURL(`file://${__dirname}/splash.html`);
   win.loadURL(
     isDev
-      ? 'http://localhost:3000'
-      : `file://${path.join(__dirname, '../build/index.html')}`
+      ? 'https://oontire.netlify.app/'
+      : `https://oontire.netlify.app/`
   )
   // win.maximize()
 

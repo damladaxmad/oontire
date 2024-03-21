@@ -122,17 +122,21 @@ const TransactionForm = ({ type, update, instance, transaction, client, hideModa
             setDisabled(true)
 
             if (update) {
+                console.log(values)
                 const res = await axios.patch(`${constants.baseUrl}/transactions/${transaction?._id}`, values,
                     {
                         headers: {
                             "authorization": token
                         }
                     }).then((res) => {
+                        // if (type == "deen") {
+                        //     let newAqrisHore = res?.data?.data?.transaction.aqrisDanbe
+                        //     dispatch(updateCustomerAqrisHore({ customerId: instance?._id, newAqrisHore }));
+                        // }
                         dispatch(updateTransaction({
                             id: transaction._id,
                             updatedTransaction: res?.data?.data?.transaction
                         }));
-                        console.log(res?.data?.data?.transaction)
                         let response = res?.data?.data?.transaction
                         client == "customer" && handleUpdateCustomerBalance(dispatch, transactions, calculateBalance, response);
                         hideModal();
@@ -152,11 +156,13 @@ const TransactionForm = ({ type, update, instance, transaction, client, hideModa
                         }
                     }).then((res) => {
                         setDisabled(false);
+                       
+                        if (type == "deen") {
+                            let newAqrisHore = res?.data?.data?.transaction.aqrisDanbe
+                            dispatch(updateCustomerAqrisHore({ customerId: instance?._id, newAqrisHore }));
+                        }
+                      
                         dispatch(addTransaction(res?.data?.data?.transaction));
-                        console.log(res?.data?.data?.transaction)
-                        let newAqrisHore = res?.data?.data?.transaction.aqrisDanbe
-                        dispatch(updateCustomerAqrisHore({ customerId: instance?._id, newAqrisHore }));
-                        console.log(res.data?.data?.transaction)
                         let response = res?.data?.data?.transaction
                         client == "customer" && handleAddCustomerBalance(dispatch, transactions, calculateBalance, response);
                         hideModal();

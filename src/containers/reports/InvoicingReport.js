@@ -31,7 +31,7 @@ const InvoicingReport = ({name, type}) => {
 
     let realCustomers = []
     customers?.map(customer => {
-        if (selectedArea && customer.area._id !== selectedArea?.value) return
+        if (selectedArea && customer?.area?._id !== selectedArea?.value) return
 
         realCustomers.push(customer)
         customerTotal += customer.balance
@@ -44,7 +44,7 @@ const InvoicingReport = ({name, type}) => {
            }, },
         { title: "Phone", field: "phone", width: "20%" },
         { title: "Zone", field: "zone", render: (data) => <p> {data.zone?.zoneName}</p> },
-        { title: "House NO.", field: "houseNo"},
+        { title: "Guri.No.", field: "houseNo"},
         { title: "A.Hore", field: "aqrisHore"},
         { title: "Balance", field: "balance" },
     ]
@@ -65,7 +65,7 @@ const InvoicingReport = ({name, type}) => {
         }}>
 
             <PrintableTableComponent columns={columns} data={realCustomers} imageUrl={imageUrl} 
-            reportTitle = {`${type} Report (${selectedArea ? realCustomers[0].area?.areaName : "All"})`}> 
+            reportTitle = {`${type} Report (${selectedArea ? realCustomers[0]?.area?.areaName : "All"})`}> 
             </PrintableTableComponent>
             <div style = {{display: "flex", justifyContent: "space-between"}}>
             <div>

@@ -6,6 +6,7 @@ import axios from "axios";
 import SmsSuccess from "../containers/sms/SmsSuccess";
 import Loading from "../containers/sms/Loading";
 import CustomButton from "../reusables/CustomButton";
+import Select from "react-select"
 
 const SendSMS = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -13,11 +14,13 @@ const SendSMS = () => {
   const token = useSelector((state) => state.login?.token);
   const activeUser = useSelector((state) => state.login?.activeUser);
   const customers = useSelector((state) => state.customers.customers);
+  const [smsType, setSmsType] = useState("all")
   const [showSuccess, setShowSuccess] = useState(false)
   const [successData, setSuccessData] = useState()
   const [loading, setLoading] = useState(false)
   const [password, setPassword] = useState("") 
   const [message, setMessage] = useState("") 
+  const [customCheck, setCustomCheck] = useState(true)
   const [text, setText] = useState('');
   const maxLength = 110;
 
@@ -40,6 +43,12 @@ const SendSMS = () => {
     setMessage(event.target.value);
   };
 
+  
+  const saleTypeOptions = [
+    { value: 'all', label: 'All' },
+    { value: 'unpaid', label: 'Unpaid' }
+  ];
+
   const handleSelectCustomer = (customerId) => {
     const updatedSelectedCustomers = [...selectedCustomers];
     const index = updatedSelectedCustomers.indexOf(customerId);
@@ -59,6 +68,10 @@ const SendSMS = () => {
       selectedCustomers.length === allCustomerIds.length ? [] : allCustomerIds
     );
   };
+
+  const handleCustomCheck = () => {
+    setCustomCheck(state => !state)
+  }
 
   const handleSendSMS = () => {
     setLoading(true)
@@ -126,6 +139,23 @@ const SendSMS = () => {
           gap: "50px",
         }}
       >
+
+{/* <Select
+        value={saleTypeOptions.find(option => option.value === smsType)}
+        options={saleTypeOptions}
+        onChange={(selectedOption) => setSmsType(selectedOption.value)}
+        styles={{
+          control: (styles, { isDisabled }) => ({
+            ...styles,
+            border: "1px solid grey",
+            height: "40px",
+            borderRadius: "5px",
+            width: "140px",
+            minHeight: "28px",
+            ...(isDisabled && { cursor: "not-allowed" }),
+          })
+        }}
+      /> */}
         <input
           type="text"
           placeholder="Search customers"
@@ -158,21 +188,22 @@ const SendSMS = () => {
           {selectedCustomers.length > 0 && `(${selectedCustomers.length})`}
         </label>
 
-        {/* <input
-          type="text"
-          placeholder="Enter Password"
-          value={password}
-          onChange={handlePassword}
-          style={{
-            width: "150px",
-            height: "45px",
-            padding: "10px",
-            fontSize: "16px",
-            borderRadius: "8px",
-            background: "#EFF0F6",
-            border: "none",
-          }}
-        /> */}
+        <label>
+          <input
+            type="checkbox"
+            onChange={handleCustomCheck}
+            checked={customCheck}
+            id="customCheck"
+            style={{
+              transform: "scale(1.5)",
+              cursor: "pointer",
+              marginRight: "15px",
+            }}
+          />
+          Custom
+        </label>
+
+
 
         <CustomButton
           onClick={handleSendSMS}
@@ -180,7 +211,7 @@ const SendSMS = () => {
         />
       </div>
 
-      <TextField
+     {customCheck && <TextField
         label={`${text.length}/${maxLength}`}
         variant="outlined"
         multiline
@@ -188,7 +219,7 @@ const SendSMS = () => {
         onChange={handleChange}
         style = {{fontSize: "16px", marginTop: "20px"}}
         inputProps={{ maxLength: maxLength }}
-      />
+      />}
 
       <div
         style={{

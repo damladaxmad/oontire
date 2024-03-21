@@ -14,7 +14,8 @@ export const handleUpdateCustomerBalance = (dispatch, transactions, calculateBal
 export const handleAddCustomerBalance = (dispatch, transactions, calculateBalance, res) => {
     const updatedTransactions = [...transactions, res];
     const newBalance = calculateBalance(updatedTransactions);
-    const customerId = res?.customer;
+    const customerId = res?.customer?._id;
+    console.log(customerId)
     dispatch(updateCustomerBalance({ _id: customerId, newBalance }));
 };
 

@@ -55,7 +55,7 @@ export default function Reports() {
           }}>
         By Area
         </div>
-        <div
+        {/* <div
           onClick={() => handleTabChange(2)}
           style={{
            padding: '5px 0px',
@@ -71,7 +71,7 @@ export default function Reports() {
             border: `1px solid ${constants.pColor}`
           }}>
           Unpaid
-        </div>
+        </div> */}
       </div>
 
       {currentTab == 0 && <PersonalReport name = "customers" type = "Customers"/>}

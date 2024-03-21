@@ -7,6 +7,8 @@ import moment from "moment";
 
 export default function LatestTransactions() {
 
+    let today = new Date()
+
     const [sales, setSales] = useState([]);
     const [loading, setLoading] = useState(true); // State for loading indicator
 
@@ -14,7 +16,7 @@ export default function LatestTransactions() {
     const token = useSelector(state => state.login?.token);
 
     const fetchSales = () => {
-        axios.get(`https://oontire-api.onrender.com/api/client/v1/transactions/get-business-transactions/65cb0bc4fa1d83bbda97dc30?customer=notnull&startDate=2024-03-01&endDate=2024-03-16`, {
+        axios.get(`${constants.baseUrl}/transactions/get-business-transactions/${business?._id}?customer=notnull&startDate=2024-03-01&endDate=${moment(today).format("YYYY-MM-DD")}`, {
             headers: {
                 "authorization": token
             }

@@ -7,7 +7,7 @@ import { Button, Typography } from "@material-ui/core";
 import moment from "moment";
 import CustomButton from "../reusables/CustomButton";
 import { addTransaction,} from "../containers/transaction/transactionSlice";
-import { setCustomerDataFetched, setCustomers, updateCustomerAqrisHore,  } from "../containers/customer/customerSlice";
+import { setCustomerDataFetched, setCustomers, updateCustomerAqrisHore, updateCustomerSocketBalance,  } from "../containers/customer/customerSlice";
 import { handleAddCustomerBalance, } from "../containers/customer/customerUtils";
 import Select from 'react-select'; // Import react-select
 import useReadData from "../hooks/useReadData";
@@ -107,10 +107,10 @@ const TransactionForm = () => {
                         }
                     }).then((res) => {
                         setDisabled(false);
-                        dispatch(addTransaction(res?.data?.data?.transaction));
-                        console.log(res?.data?.data?.transaction)
+                        let debit = res?.data?.data?.transaction?.debit
+                        dispatch(updateCustomerSocketBalance({_id: selectedCustomer?.value, transaction: debit}))
                         let newAqrisHore = res?.data?.data?.transaction.aqrisDanbe
-                        dispatch(updateCustomerAqrisHore({ customerId: selectedCustomer?._id, newAqrisHore }));
+                        dispatch(updateCustomerAqrisHore({ customerId: selectedCustomer?.value, newAqrisHore }));
                         resetForm(); // Reset the form
                         setSelectedCustomer(null);
                         let response = res?.data?.data?.transaction

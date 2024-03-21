@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import Table from "../utils/Table";
 import { useDispatch, useSelector } from "react-redux";
-import { addCustomer, deleteCustomer, setCustomerDataFetched, setCustomers, updateCustomer, updateCustomerSocketBalance } from "../containers/customer/customerSlice";
+import { addCustomer, deleteCustomer, setCustomerDataFetched, setCustomers, updateCustomer, updateCustomerAqrisHore, updateCustomerSocketBalance } from "../containers/customer/customerSlice";
 import { constants } from "../Helpers/constantsFile";
 import Register from "../utils/Register";
 import { deleteFunction } from "../funcrions/deleteStuff";
@@ -112,7 +112,7 @@ export default function Customers() {
   const { handleEvent } = useEventHandler();
 
   useEffect(() => {
-    const socket = io.connect('https://booktire-api.onrender.com');
+    const socket = io.connect('https://oontire-api.onrender.com');
     socket.on('customerEvent', (data) => {
       handleEvent(data, mySocketId, business?._id, "customerEvent");
     });
@@ -132,15 +132,18 @@ export default function Customers() {
     if (business?._id !== businessId) return
     if (eventType === 'add') {
       let newTransaction = transaction?.debit == 0 ? -transaction?.credit : transaction?.debit
-      dispatch(updateCustomerSocketBalance({_id: transaction?.customer, transaction: newTransaction}))
+      let newAqrisHore = transaction?.aqrisDanbe
+      dispatch(updateCustomerSocketBalance({_id: transaction?.customer?._id, transaction: newTransaction}))
+      dispatch(updateCustomerAqrisHore({ customerId: transaction?.customer?._id, newAqrisHore }));
     } else if (eventType === 'delete') {
       let newTransaction = transaction?.debit == 0 ? transaction?.credit : -transaction?.debit
       dispatch(updateCustomerSocketBalance({_id: transaction?.customer, transaction: newTransaction}))
     } else if (eventType === 'update') {
-      console.log(transaction)
     }
 
 };
+
+
 
 // if (!privileges?.includes("Customers")) return (
 //   <div style = {parentDivStyle}>

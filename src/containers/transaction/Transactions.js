@@ -146,7 +146,7 @@ const Transactions = ({ instance, client, url, hideTransactions, }) => {
 
     useEffect(() => {
 
-        const socket = io.connect('https://booktire-api.onrender.com');
+        const socket = io.connect('https://oontire-api.onrender.com');
         socket.on('transactionEvent', (data) => {
             handleTransactionEvent(data)
         });
@@ -163,7 +163,6 @@ const Transactions = ({ instance, client, url, hideTransactions, }) => {
         if (mySocketId == socketId) return
         if (business?._id !== businessId) return
         if (eventType === 'add') {
-            alert("add")
             dispatch(addTransaction(transaction))
         } else if (eventType === 'delete') {
             dispatch(deleteTransaction(transaction?._id))
@@ -291,9 +290,20 @@ const Transactions = ({ instance, client, url, hideTransactions, }) => {
                     background: constants.backdropColor,
                 }}
                 onRowClick={(e, rowData) => {
+                    const lastIndex = rowData?.length - 1;
+                    console.log(e)
+                    console.log(rowData.tableData)
+                    const isLastRow = rowData.tableData.id === lastIndex;
+                    if (isLastRow) console.log("it is")
                     setTransaction(rowData)
                     setUpdate(true)
                     setShowForm(true)
+                    if (rowData?.transactionType == "charge") {
+                        setType("deen")
+                    }
+                    if (rowData?.transactionType == "payment") {
+                        setType("bixin")
+                    }
                 }}
             />
 

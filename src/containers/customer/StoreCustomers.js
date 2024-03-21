@@ -7,7 +7,8 @@ import { Checkbox } from '@material-ui/core';
 import useReadData from '../../hooks/useReadData';
 import { setAreaDataFetched, setAreas } from '../area/areaSlice';
 import Select from "react-select"
-import { addCustomer } from './customerSlice';
+import { addCustomer, updateCustomerAqrisHore } from './customerSlice';
+import { handleAddCustomerBalance } from './customerUtils';
 
 export default function ({ customers, hide }) {
     const [isChecked, setIsChecked] = useState(true);
@@ -19,6 +20,16 @@ export default function ({ customers, hide }) {
     const areaUrl = `${constants.baseUrl}/business-areas/get-business-areas/${business?._id}`
 
     const dispatch = useDispatch()
+
+    const calculateBalance = (transactions) => {
+        console.log(transactions)
+        let balance = 0;
+        transactions?.forEach(transaction => {
+            balance += transaction.debit - transaction.credit;
+        });
+        console.log(balance)
+        return balance;
+    };
 
     useReadData(
         areaUrl,
@@ -39,6 +50,8 @@ export default function ({ customers, hide }) {
             aqrisHore: data["AqrisHore"],
             houseNo: data["HouseNo"],
             balance: data["Balance"],
+            damiinName: data["DamiinName"],
+            damiinPhone: data["DamiinPhone"]
         })
     })
 
@@ -85,6 +98,10 @@ export default function ({ customers, hide }) {
                 }
             ).then(res => {
                 console.log("sucess")
+                let newAqrisHore = res?.data?.data?.transaction.aqrisDanbe
+                let response = res?.data?.data?.transaction
+                dispatch(updateCustomerAqrisHore({ customerId: myCustomer?._id, newAqrisHore }));
+                handleAddCustomerBalance(dispatch, [], calculateBalance, response);
             }).catch(err => {
                 alert(err?.response?.data?.message)
             });
@@ -93,6 +110,7 @@ export default function ({ customers, hide }) {
 
 
     const createHandler = async () => {
+        if (!selectedArea) return alert("Select Area!")
         setDisabled(true);
         for (const customer of updatedCustomers) {
             await loopAndUpload(customer);

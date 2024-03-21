@@ -38,7 +38,7 @@ const PersonalReport = ({name, type}) => {
             whiteSpace: 'nowrap' },},
         { title: "Phone", field: "phone", width: "20%" },
         { title: "Area", field: "area", render: (data) => <p> {data.area.areaName}</p> },
-        { title: "House NO.", field: "houseNo"},
+        { title: "Guri.No.", field: "houseNo"},
         { title: "Balance", field: "balance" },
     ]
 
