@@ -4,34 +4,33 @@ import MyTable from "../../utils/MyTable"
 import PrintableTableComponent from "./PintableTableComponent"
 import { useReactToPrint } from 'react-to-print';
 import CustomButton from "../../reusables/CustomButton";
-import { setAreaDataFetched, setAreas } from "../area/areaSlice";
 import Select from "react-select"
 import useReadData from "../../hooks/useReadData";
 import { constants } from "../../Helpers/constantsFile";
 import { useState } from "react";
+import { setZoneDataFetched, setZones } from "../zone/zoneSlice";
 
-const InvoicingReport = ({name, type}) => {
+const ByZoneReport = ({name, type}) => {
 
     const customers = JSON.parse(JSON.stringify(useSelector(state => state.customers.customers)))
-    const [selectedArea, setSelectedArea] = useState(null); // Track selected area
+    const [selectedZone, setSelectedZone] = useState(null); // Track selected area
     const {business} = useSelector(state => state.login.activeUser)
-    const areas = useSelector(state => state.areas.areas);
+    const zones = useSelector(state => state.zones.zones);
     const imageUrl = `https://firebasestorage.googleapis.com/v0/b/deentire-application.appspot.com/o/LOGO%2Fliibaan.jpeg?alt=media&token=f5b0b3e7-a5e0-4e0d-b3d2-20a920f97fde`;
-    const areaUrl = `${constants.baseUrl}/business-areas/get-business-areas/${business?._id}`
+    const zoneUrl = `${constants.baseUrl}/business-zones/get-business-zones/${business?._id}`
     
     useReadData(
-      areaUrl,
-      setAreas,
-      setAreaDataFetched,
-      state => state.users.isAreasDataFetched,
-      "areas"
+      zoneUrl,
+      setZones,
+      setZoneDataFetched,
+      state => state.zones.isZoneDataFetched,
+      "zones"
     );
     let customerTotal = 0
-    let vendorTotal = 0
 
     let realCustomers = []
     customers?.map(customer => {
-        if (selectedArea && customer?.area?._id !== selectedArea?.value) return
+        if (selectedZone && customer?.zone?._id !== selectedZone?.value) return
 
         realCustomers.push(customer)
         customerTotal += customer.balance
@@ -65,14 +64,14 @@ const InvoicingReport = ({name, type}) => {
         }}>
 
             <PrintableTableComponent columns={columns} data={realCustomers} imageUrl={imageUrl} 
-            reportTitle = {`${type} Report (${selectedArea ? realCustomers[0]?.area?.areaName : "All"})`}> 
+            reportTitle = {`Zone Report (${selectedZone ? realCustomers[0]?.zone?.zoneName : "All"})`}> 
             </PrintableTableComponent>
             <div style = {{display: "flex", justifyContent: "space-between"}}>
             <div>
                 <Typography style = {{
                     fontWeight: "bold",
                     fontSize: "20px"
-                }}> {type} Report</Typography>
+                }}> Zones Report</Typography>
                 <Typography style = {{
                     fontSize: "18px",
                     color: "#6C6C6C"
@@ -80,9 +79,9 @@ const InvoicingReport = ({name, type}) => {
             </div>
 
             <Select
-                    placeholder="Select Area"
-                    options={areas.map(area => ({ value: area._id, label: area.areaName }))}
-                    onChange={selectedOption => setSelectedArea(selectedOption)} // Handle selected area
+                    placeholder="Select Zone"
+                    options={zones?.map(zone => ({ value: zone._id, label: zone.zoneName }))}
+                    onChange={selectedOption => setSelectedZone(selectedOption)} // Handle selected area
                     isClearable={true}
                     isSearchable={true}
                     style={{ width: '45%' }}
@@ -103,4 +102,4 @@ const InvoicingReport = ({name, type}) => {
     )
 }
 
-export default InvoicingReport
+export default ByZoneReport

@@ -156,7 +156,7 @@ export default function Customers() {
     <div style={parentDivStyle}>
 
       {!showTransactions && <TitleComponent title="Customers"
-        btnName="Create Customers" onClick={handleShowRegister} />}
+        btnName="Abuur Macaamiil" onClick={handleShowRegister} />}
 
       {!showTransactions && <CustomRibbon query={query}
         setQuery={handleSearchChange} />}

@@ -9,32 +9,31 @@ export default function LatestTransactions() {
 
     let today = new Date()
 
-    const [sales, setSales] = useState([]);
+    const [transactions, setTransaction] = useState([]);
     const [loading, setLoading] = useState(true); // State for loading indicator
 
     const { business } = useSelector(state => state.login?.activeUser);
     const token = useSelector(state => state.login?.token);
 
-    const fetchSales = () => {
+    const fetchTransactions = () => {
         axios.get(`${constants.baseUrl}/transactions/get-business-transactions/${business?._id}?customer=notnull&startDate=2024-03-01&endDate=${moment(today).format("YYYY-MM-DD")}`, {
             headers: {
                 "authorization": token
             }
         }).then(res => {
             console.log(res.data?.data)
-            setSales(res?.data?.data?.transactions || []);
+            setTransaction(res?.data?.data?.transactions || []);
         }).catch(error => {
-            console.error("Error fetching sales:", error);
+            console.error("Error fetching transactions:", error);
         }).finally(() => {
             setLoading(false); // Set loading to false when data fetching completes
         });
     };
 
     useEffect(() => {
-        fetchSales();
+        fetchTransactions();
     }, []);
 
-    console.log(sales)
 
     return (
         <div style={{
@@ -48,9 +47,9 @@ export default function LatestTransactions() {
                 </div>
             ) : (
                 <>
-                    {sales.length > 0 ? (
-                        sales.slice(-5).reverse().map((d, index) => {
-                            const actualIndex = sales.length - index - 1;
+                    {transactions?.length > 0 ? (
+                        transactions?.slice(-5).reverse().map((d, index) => {
+                            const actualIndex = transactions?.length - index - 1;
                             return <Transaction key={actualIndex} data={d} index={index} />;
                         })
                     ) : (

@@ -122,15 +122,15 @@ const Transactions = ({ instance, client, url, hideTransactions, }) => {
         { title: "User", field: "user", render: (data)=> <p> {data?.user?.name}</p> ,
         cellStyle: { border: "none" }, width: "20%" },
         {
-            title: "Debit", field: "debit",
-            editable: rowData => rowData.debit == 0 && "never",
-            cellStyle: { border: "none" }
-        },
-        {
-            title: "Credit", field: "credit",
-            editable: rowData => rowData.credit == 0 && "never",
-            cellStyle: { border: "none" }
-        },
+            title: "Amount",
+            field: "amount",
+            cellStyle: { border: "none" },
+            render: rowData => {
+                const amount = rowData.debit - rowData.credit;
+
+                return <span>{amount < 0 ? amount * -1 : amount}</span>;
+            }
+        },        
         {
             title: "Balance",
             cellStyle: { border: "none" },

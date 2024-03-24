@@ -249,7 +249,7 @@ const SendSMS = () => {
                 flexDirection: "row",
                 gap: "30px",
                 padding: "15px 25px",
-                borderRadius: "10px",
+                borderRadius: "5px",
               }}
               onClick={() => handleSelectCustomer(customer._id)}
             >

@@ -83,13 +83,13 @@ export default function ({ customers, hide }) {
                 {
                     business: business?._id,
                     customer: myCustomer?._id,
-                    description: "Total",
+                    description: "Reesto",
                     transactionType: "charge",
                     aqrisHore:(myCustomer?.aqrisHore * 1.5 - balance ) / 1.5,
                     user: _id,
                     aqrisDanbe: myCustomer?.aqrisHore,
                     debit: balance,
-                    date: "2024/02/6"
+                    date: new Date()
                 },
                 {
                     headers: {

@@ -4,41 +4,47 @@ import MyTable from "../../utils/MyTable"
 import PrintableTableComponent from "./PintableTableComponent"
 import { useReactToPrint } from 'react-to-print';
 import CustomButton from "../../reusables/CustomButton";
+import { setAreaDataFetched, setAreas } from "../area/areaSlice";
+import Select from "react-select"
+import useReadData from "../../hooks/useReadData";
+import { constants } from "../../Helpers/constantsFile";
+import { useState } from "react";
 
-const PersonalReport = ({name, type}) => {
+const InvoicingReport = ({name, type}) => {
 
     const customers = JSON.parse(JSON.stringify(useSelector(state => state.customers.customers)))
-
+    const [selectedArea, setSelectedArea] = useState(null); // Track selected area
+    const {business} = useSelector(state => state.login.activeUser)
+    const areas = useSelector(state => state.areas.areas);
     const imageUrl = `https://firebasestorage.googleapis.com/v0/b/deentire-application.appspot.com/o/LOGO%2Fliibaan.jpeg?alt=media&token=f5b0b3e7-a5e0-4e0d-b3d2-20a920f97fde`;
-
+    const areaUrl = `${constants.baseUrl}/business-areas/get-business-areas/${business?._id}`
+    
+    useReadData(
+      areaUrl,
+      setAreas,
+      setAreaDataFetched,
+      state => state.users.isAreasDataFetched,
+      "areas"
+    );
     let customerTotal = 0
-    let vendorTotal = 0
 
     let realCustomers = []
     customers?.map(customer => {
-        if (!customer?.type || customer?.type == "deynle")
-        if (customer.balance > 0) {
+        if (selectedArea && customer?.area?._id !== selectedArea?.value) return
+
         realCustomers.push(customer)
         customerTotal += customer.balance
-        }
+        
     })
 
-    const decideTotal = () => {
-        if (type == "Customers") return customerTotal
-        if (type == "Vendors") return vendorTotal
-        return 0
-    }
-    const decideCount = () => {
-        if (type == "Customers") return realCustomers?.length
-        return 0
-    }
-
     const columns = [
-        { title: "Full Name", field: "name", cellStyle: {
-            whiteSpace: 'nowrap' },},
+        { title: "Full Name", field: "name",    cellStyle: {
+            whiteSpace: 'nowrap'
+           }, },
         { title: "Phone", field: "phone", width: "20%" },
-        { title: "Area", field: "area", render: (data) => <p> {data?.area?.areaName}</p> },
+        { title: "Zone", field: "zone", render: (data) => <p> {data.zone?.zoneName}</p> },
         { title: "Guri.No.", field: "houseNo"},
+        { title: "A.Hore", field: "aqrisHore"},
         { title: "Balance", field: "balance" },
     ]
 
@@ -57,27 +63,36 @@ const PersonalReport = ({name, type}) => {
             width: "100%"
         }}>
 
-            <PrintableTableComponent columns={columns} data={type == "Customers" ? realCustomers : null} imageUrl={imageUrl} 
-            reportTitle = {`${type} Report`}> 
+            <PrintableTableComponent columns={columns} data={realCustomers} imageUrl={imageUrl} 
+            reportTitle = {`Area Report (${selectedArea ? realCustomers[0]?.area?.areaName : "All"})`}> 
             </PrintableTableComponent>
             <div style = {{display: "flex", justifyContent: "space-between"}}>
             <div>
                 <Typography style = {{
                     fontWeight: "bold",
                     fontSize: "20px"
-                }}> {type} Report</Typography>
+                }}> Areas Report</Typography>
                 <Typography style = {{
                     fontSize: "18px",
                     color: "#6C6C6C"
-                }}> {decideCount()} {name}</Typography>
+                }}> {realCustomers?.length} {name}</Typography>
             </div>
+
+            <Select
+                    placeholder="Select Area"
+                    options={areas.map(area => ({ value: area._id, label: area.areaName }))}
+                    onChange={selectedOption => setSelectedArea(selectedOption)} // Handle selected area
+                    isClearable={true}
+                    isSearchable={true}
+                    style={{ width: '45%' }}
+                />
             
             <CustomButton text = "Print" onClick={handlePrint} height="35px" fontSize="14px"/>
 
             <Typography style = {{
                     fontWeight: "bold",
                     fontSize: "20px"
-                }}> ${decideTotal().toFixed(2)}</Typography>
+                }}> ${customerTotal?.toFixed(2)}</Typography>
             </div>
            
            {name == "customers" && <MyTable columns = {columns} data = {realCustomers}
@@ -87,4 +102,4 @@ const PersonalReport = ({name, type}) => {
     )
 }
 
-export default PersonalReport
+export default InvoicingReport

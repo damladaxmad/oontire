@@ -11,7 +11,7 @@ const MyTable = (props) => {
 
   return (
     <div style={{ width: props.page == "New Purchase" ? "98%" : 
-    props.kind == "Report" ? "100%" : "95%", 
+    props.kind == "Report" ? "100%" : "100%", 
     margin: props.page == "New Purchase" ? "none" : "auto" }}>
 
       <MaterialTable
