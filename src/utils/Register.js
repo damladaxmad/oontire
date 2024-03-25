@@ -9,6 +9,7 @@ import CustomButton from "../reusables/CustomButton";
 import { setAreaDataFetched, setAreas } from "../containers/area/areaSlice";
 import { setZoneDataFetched, setZones } from "../containers/zone/zoneSlice";
 import useReadData from "../hooks/useReadData";
+import { setExpenseTypes, setExpenseTypesDataFetched } from "../containers/expenseTypes/expenseTypesSlice";
 
 const Register = ({instance, store, name, fields, update, url, business,
 hideModal, onUpdate}) => {
@@ -20,8 +21,10 @@ hideModal, onUpdate}) => {
   const mySocketId = useSelector(state => state?.login?.mySocketId)
   const areas = JSON.parse(JSON.stringify(useSelector(state => state.areas?.areas || [])))
   const zones = JSON.parse(JSON.stringify(useSelector(state => state.zones?.zones || [])))
+  const expenseTypes = JSON.parse(JSON.stringify(useSelector(state => state.expenseTypes?.expenseTypes || [])))
   const areaUrl = `${constants.baseUrl}/business-areas/get-business-areas/${business2?._id}`
   const zoneUrl = `${constants.baseUrl}/business-zones/get-business-zones/${business2?._id}`
+  const expenseTypeUrl = `${constants.baseUrl}/expenses-types/get-business-expense-types/${business2?._id}`
   
   useReadData(
     areaUrl,
@@ -38,20 +41,27 @@ hideModal, onUpdate}) => {
     state => state.users.isZonesDataFetched,
     "zones"
   );
+  useReadData(
+    expenseTypeUrl,
+    setExpenseTypes,
+    setExpenseTypesDataFetched,
+    state => state.users.isExpenseTypesDataFetched,
+    "expenseTypes"
+  );
 
   const dispatch = useDispatch()
 
   const validate = (values) => {
     const errors = {};
 
-     if ( name !== "Category" && !values.name) {
+     if ( (name !== "Category" && name !== "Qarashaad" ) && !values.name) {
        errors.name = "Field is Required";
      }
 
-     if ( name == "Category" && !values.categoryName) {
+     if ( (name !== "Category" && name !== "Qarashaad" ) && !values.categoryName) {
        errors.categoryName = "Field is Required";
      }
-     if ( (name !== "User" && name !== "Category") && (!values.phone)) {
+     if ( (name !== "User" && name !== "Category" && name !== "Qarashaad") && (!values.phone)) {
        errors.phone = "Field is Required";
      }
   
@@ -65,12 +75,15 @@ hideModal, onUpdate}) => {
         phone: update ? instance?.phone : "",
         area: update ? instance?.area : "",
         zone: update ? instance?.zone : "",
+        expenseType: update ? instance?.expenseType : "",
         houseNo: update ? instance?.houseNo : "",
         aqrisHore: update ? instance?.aqrisHore : "",
         damiinName: update ? instance?.damiinName : "",
         damiinPhone: update ? instance?.damiinPhone : "",
         username: update && name == "User" ? instance?.username : "",
-        role: update && name == "User" ? instance?.role : ""
+        role: update && name == "User" ? instance?.role : "",
+        description: update && name == "Qarashaad" ? instance?.description : "",
+        amount: update && name == "Qarashaad" ? instance?.amount : "",
     },
     validate,
     onSubmit: (values,  ) => {
@@ -83,6 +96,9 @@ hideModal, onUpdate}) => {
       }
       if (typeof values.zone === 'object') {
         values.zone = values.zone?._id;
+      }
+      if (typeof values.expenseType === 'object') {
+        values.expenseType = values.expenseType?._id;
       }
 
       if (update){
@@ -165,7 +181,7 @@ hideModal, onUpdate}) => {
           </div>
         ))}
 
-<Select
+{ name !== "Qarashaad" && <Select
             placeholder='Select area'
             styles={{
               control: (styles, { isDisabled }) => ({
@@ -208,9 +224,9 @@ hideModal, onUpdate}) => {
             onChange={(selectedOption) => formik.setFieldValue("area", selectedOption ? selectedOption.value : null)}
             isClearable={true} 
             isDisabled={disabled}
-          />
+          /> }
 
-{name !== "User" && <Select
+{(name !== "User" && name !== "Qarashaad" ) && <Select
             placeholder='Select zone'
             styles={{
               control: (styles, { isDisabled }) => ({
@@ -251,6 +267,51 @@ hideModal, onUpdate}) => {
             value={formik.values.zone ? { value: formik.values.zone, label: formik.values.zone.zoneName } : null}
             options={zones?.map(zone => ({ value: zone, label: zone?.zoneName }))}
             onChange={(selectedOption) => formik.setFieldValue("zone", selectedOption ? selectedOption.value : null)}
+            isClearable={true} 
+            isDisabled={disabled}
+          />}
+
+{(name ==  "Qarashaad" ) && <Select
+            placeholder='Select type'
+            styles={{
+              control: (styles, { isDisabled }) => ({
+                ...styles,
+                border: "1px solid lightGrey",
+                height: "40px",
+                borderRadius: "5px",
+                width: "250px",
+                minHeight: "28px",
+                ...(isDisabled && { cursor: "not-allowed" }),
+              }),
+              menu: (provided, state) => ({
+                ...provided,
+                zIndex: 9999 
+              }),
+              option: (provided, state) => ({
+                ...provided,
+                color: state.isSelected ? "black" : "inherit", // Keep text black for selected option
+                backgroundColor: state.isSelected ? constants.pColor + "1A" : "inherit",
+                "&:hover": {
+                  backgroundColor: constants.pColor + "33",
+                }
+              }),
+              singleValue: (provided, state) => ({
+                ...provided,
+                color: "black",
+              }),
+              input: (provided, state) => ({
+                ...provided,
+                color: "black", 
+                "&:focus": {
+                  borderColor: constants.pColor,
+                  boxShadow: `0 0 0 1px ${constants.pColor}`,
+                }
+              }),
+            }}
+            menuPlacement="top" 
+            value={formik.values.expenseType ? { value: formik.values.expenseType, label: formik.values.expenseType?.name } : null}
+            options={expenseTypes?.map(type => ({ value: type, label: type?.name }))}
+            onChange={(selectedOption) => formik.setFieldValue("expenseType", selectedOption ? selectedOption.value : null)}
             isClearable={true} 
             isDisabled={disabled}
           />}

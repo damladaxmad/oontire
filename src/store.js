@@ -6,6 +6,8 @@ import transactionSlice from './containers/transaction/transactionSlice';
 import userSlice from './containers/user/userSlice';
 import areaSlice from "./containers/area/areaSlice"
 import zoneSlice from './containers/zone/zoneSlice';
+import qarashaadSlice from './containers/qarashaad/qarashaadSlice';
+import expenseTypesSlice from './containers/expenseTypes/expenseTypesSlice';
 
 const store = configureStore({
   reducer: {
@@ -14,7 +16,9 @@ const store = configureStore({
     users: userSlice,
     transactions: transactionSlice,
     areas: areaSlice,
-    zones: zoneSlice
+    zones: zoneSlice,
+    qarashaad: qarashaadSlice,
+    expenseTypes: expenseTypesSlice
   },
 });
 

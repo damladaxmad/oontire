@@ -3,7 +3,7 @@ import DashboardIcon from "@material-ui/icons/Dashboard";
 import GroupIcon from "@material-ui/icons/Group";
 import { MdOutlineAdminPanelSettings, MdOutlineFileDownload, MdSettings, } from 'react-icons/md';
 import { HiOutlineDocumentReport, HiOutlineNewspaper } from "react-icons/hi";
-import { BiMessageDetail } from 'react-icons/bi';
+import { BiMessageDetail, BiWallet } from 'react-icons/bi';
 
 export const SidebarData = [
   {
@@ -31,6 +31,11 @@ export const SidebarData = [
     text: 'Send SMS',
     path: '/sms',
     icon: <BiMessageDetail   style={{fontSize: "20px", }} />
+  },
+  {
+    text: 'Qarashaad',
+    path: '/expenses',
+    icon: <BiWallet   style={{fontSize: "20px", }} />
   },
   {
     text: "Reports",
