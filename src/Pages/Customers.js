@@ -16,6 +16,7 @@ import io from 'socket.io-client';
 import useReadData from "../hooks/useReadData";
 import useEventHandler from "../hooks/useEventHandler";
 import { handleAddCustomerBalance, handleDeleteCustomerBalance, handleUpdateCustomerBalance } from "../containers/customer/customerUtils";
+import axios from "axios";
 
 const parentDivStyle = {
   display: "flex",
@@ -30,7 +31,7 @@ export default function Customers() {
   const [query, setQuery] = useState("")
   const [showTransactions, setShowTransactions] = useState(false)
   const [instance, setInstance] = useState(null)
-  const { business, privileges } = useSelector(state => state.login.activeUser)
+  const { business, privileges, _id } = useSelector(state => state.login.activeUser)
   const mySocketId = useSelector(state => state?.login?.mySocketId)
   const token = useSelector(state => state.login.token)
   const url = `${constants.baseUrl}/customers/get-business-customers/${business?._id}`
@@ -143,6 +144,45 @@ export default function Customers() {
 
 };
 
+const calculateBalance = (transactions) => {
+  let balance = 0;
+  transactions?.forEach(transaction => {
+      balance += transaction.debit - transaction.credit;
+  });
+  return balance;
+};
+
+const createReesto = (customer, reesto) => {
+  if (!reesto || reesto == 0) return
+  axios.post(
+    `${constants.baseUrl}/transactions`,
+    {
+        business: business?._id,
+        customer: customer?._id,
+        description: "Reesto",
+        transactionType: "charge",
+        aqrisHore:(customer?.aqrisHore * 1.5 - reesto ) / 1.5,
+        user: _id,
+        aqrisDanbe: customer?.aqrisHore,
+        debit: reesto,
+        date: new Date()
+    },
+    {
+        headers: {
+            "authorization": token
+        }
+    }
+).then(res => {
+    console.log("sucess")
+    let newAqrisHore = res?.data?.data?.transaction.aqrisDanbe
+    let response = res?.data?.data?.transaction
+    dispatch(updateCustomerAqrisHore({ customerId: customer?._id, newAqrisHore }));
+    handleAddCustomerBalance(dispatch, [], calculateBalance, response);
+}).catch(err => {
+    alert(err?.response?.data?.message)
+})
+}
+
 
 
 // if (!privileges?.includes("Customers")) return (
@@ -196,9 +236,10 @@ export default function Customers() {
         url="customers"
         business={business?._id}
         hideModal={() => { handleHide() }}
-        store={(data) => {
+        store={(data, reesto) => {
           dispatch(addCustomer(data?.customer))
           notify("Customer created successfully")
+          createReesto(data?.customer, reesto)
         }}
         onUpdate={
           (data) => {

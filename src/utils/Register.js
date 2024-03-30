@@ -58,7 +58,7 @@ hideModal, onUpdate}) => {
        errors.name = "Field is Required";
      }
 
-     if ( (name !== "Category" && name !== "Qarashaad" ) && !values.categoryName) {
+     if ( name == "Category" && !values.categoryName) {
        errors.categoryName = "Field is Required";
      }
      if ( (name !== "User" && name !== "Category" && name !== "Qarashaad") && (!values.phone)) {
@@ -87,6 +87,8 @@ hideModal, onUpdate}) => {
     },
     validate,
     onSubmit: (values,  ) => {
+      const balance = values.reesto;
+      delete values.reesto;
       setDisabled(true)
       values.business = business
       values.socketId = mySocketId
@@ -125,7 +127,7 @@ hideModal, onUpdate}) => {
         }).then((res) => {
           setDisabled(false)
           hideModal()
-          store(res?.data?.data)
+          store(res?.data?.data, balance)
         }).catch((err) => {
           setDisabled(false)
           alert(err?.response?.data?.message);
@@ -158,8 +160,9 @@ hideModal, onUpdate}) => {
       flexDirection: "row", alignItems: "center",
     flexWrap: "wrap", marginBottom: "12px"}}
       >
-        {filteredFields?.map((a, index) => (
-          <div key = {index}>
+        {filteredFields?.map((a, index) => {
+          if (update && a.name == "reesto") return
+         return <div key = {index}>
             <input
               // variant="outlined"
               label={a.label}
@@ -179,7 +182,7 @@ hideModal, onUpdate}) => {
               <div style={{ color: "red" }}>{formik.errors[a.name]}</div>
             ) : null}
           </div>
-        ))}
+})}
 
 { name !== "Qarashaad" && <Select
             placeholder='Select area'

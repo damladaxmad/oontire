@@ -42,7 +42,7 @@ const TransactionForm = ({ type, update, instance, transaction, client, hideModa
 
 
     const arr = type == "bixin" ? [
-        { label: "Geli Lacagta", type: "number", name: "credit" },
+        { label: "Geli Lacagta", type: "float", name: "credit" },
         { label: "Geli Faahfaahin", type: "text", name: "description" },
         { label: "", type: "date", name: "date" },
     ] :
