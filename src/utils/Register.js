@@ -10,6 +10,7 @@ import { setAreaDataFetched, setAreas } from "../containers/area/areaSlice";
 import { setZoneDataFetched, setZones } from "../containers/zone/zoneSlice";
 import useReadData from "../hooks/useReadData";
 import { setExpenseTypes, setExpenseTypesDataFetched } from "../containers/expenseTypes/expenseTypesSlice";
+import moment from "moment";
 
 const Register = ({instance, store, name, fields, update, url, business,
 hideModal, onUpdate}) => {
@@ -49,6 +50,8 @@ hideModal, onUpdate}) => {
     "expenseTypes"
   );
 
+  const today = new Date()
+
   const dispatch = useDispatch()
 
   const validate = (values) => {
@@ -84,6 +87,8 @@ hideModal, onUpdate}) => {
         role: update && name == "User" ? instance?.role : "",
         description: update && name == "Qarashaad" ? instance?.description : "",
         amount: update && name == "Qarashaad" ? instance?.amount : "",
+        date: update && name == "Qarashaad" ? moment(instance?.date).format("YYYY-MM-DD") : moment(today).format("YYYY-MM-DD"),
+
     },
     validate,
     onSubmit: (values,  ) => {

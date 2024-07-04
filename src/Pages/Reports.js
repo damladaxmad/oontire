@@ -6,6 +6,7 @@ import StockSummary from "../containers/reports/StockSummary";
 import InvoicingReport from "../containers/reports/ByAreaReport";
 import ByZoneReport from "../containers/reports/ByZoneReport";
 import LacagQabasho from "../containers/reports/LacagQabasho";
+import ZoneSummary from "../containers/reports/ZoneSummary";
 
 export default function Reports() {
   const [currentTab, setCurrentTab] = useState(0)
@@ -91,6 +92,23 @@ export default function Reports() {
           }}>
         Qabasho
         </div>
+        <div
+          onClick={() => handleTabChange(4)}
+          style={{
+           padding: '5px 0px',
+            width: "100px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            marginRight: '10px',
+            cursor: 'pointer',
+            backgroundColor: currentTab === 4 ? constants.pColor : 'transparent',
+            color: currentTab === 4 ? 'white' : 'black',
+            borderRadius: '50px',
+            border: `1px solid ${constants.pColor}`
+          }}>
+        Summary
+        </div>
        
       </div>
 
@@ -98,6 +116,7 @@ export default function Reports() {
       {currentTab == 1 && <InvoicingReport name = "customers" type = "Invoicing"/>}
       {currentTab == 2 && <ByZoneReport name = "customers" type = "Invoicing"/>}
       {currentTab == 3 && <LacagQabasho name = "customers" type = "Invoicing"/>}
+      {currentTab == 4 && <ZoneSummary name = "customers" type = "Invoicing"/>}
       </div>
     )
   }

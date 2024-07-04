@@ -34,11 +34,14 @@ const PersonalReport = ({name, type}) => {
     }
 
     const columns = [
+        { title: "Guri.No.", field: "houseNo", cellStyle: {
+            whiteSpace: 'nowrap' },},
         { title: "Full Name", field: "name", cellStyle: {
             whiteSpace: 'nowrap' },},
         { title: "Phone", field: "phone", width: "20%" },
         { title: "Area", field: "area", render: (data) => <p> {data?.area?.areaName}</p> },
-        { title: "Guri.No.", field: "houseNo"},
+        { title: "Zone", field: "zone", render: (data) => <p> {data.zone?.zoneName}</p> },
+        { title: "M.Hore", field: "aqrisHore"},
         { title: "Balance", field: "balance" },
     ]
 
@@ -59,6 +62,10 @@ const PersonalReport = ({name, type}) => {
 
             <PrintableTableComponent columns={columns} data={type == "Customers" ? realCustomers : null} imageUrl={imageUrl} 
             reportTitle = {`${type} Report`}> 
+             <div style = {{marginTop: "10px"}}>  
+                <Typography style = {{ fontSize: "16px"}}>  TOTAL: 
+                <span  style = {{fontWeight: "bold", fontSize: "18px"}}> ${customerTotal} </span></Typography>
+            </div>
             </PrintableTableComponent>
             <div style = {{display: "flex", justifyContent: "space-between"}}>
             <div>
