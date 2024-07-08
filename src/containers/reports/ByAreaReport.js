@@ -38,7 +38,7 @@ const InvoicingReport = ({name, type}) => {
     })
 
     const columns = [
-        { title: "Guri.No.", field: "houseNo"},
+        { title: "Guri.No.", field: "houseNo", defaultSort: "asc"},
         { title: "Full Name", field: "name",    cellStyle: {
             whiteSpace: 'nowrap'
            }, },

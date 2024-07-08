@@ -3,22 +3,33 @@ import MaterialTable from 'material-table';
 import { Typography } from '@material-ui/core';
 import logo from "../../assets/images/logo.png";
 import { MdKeyboardArrowRight } from 'react-icons/md';
-import "./PrintableTable.css"
+import "./PrintableTable.css";
 import { useSelector } from 'react-redux';
 
-const PrintableTableComponent = ({reportTitle, columns, data, imageUrl, children }) => {
+const PrintableTableComponent = ({ reportTitle, columns, data, imageUrl, children }) => {
+    const { business } = useSelector(state => state.login?.activeUser);
+    console.log("Rendered!!!");
 
-    const {business} = useSelector(state => state.login?.activeUser)
-   
+    // Ensure houseNo is recognized as a numeric field by MaterialTable
+    const columnsWithTypes = columns.map(column => {
+        if (column.field === "houseNo") {
+            return { ...column, type: "numeric", cellStyle: { width: '20px', minWidth: '20px' }, // Adjust width here
+            headerStyle: { width: '20px', minWidth: '20px' } };
+        }
+        return column;
+    });
+
     return (
-        <div className="printable-table" style={{ padding: "15px 20px",}}>
-
+        <div className="printable-table" style={{ padding: "15px 20px" }}>
             <div style={{ display: "flex", flexDirection: "row", width: "100%", justifyContent: "space-between" }}>
                 <div>
-                    <Typography style={{ fontSize: "20px", fontWeight: "bold" }}> {business?.businessName}</Typography>
-                    <Typography style={{ fontSize: "18px" }}> {business?.businessLocation} - {business?.businessNumber}</Typography>
+                    <Typography style={{ fontSize: "20px", fontWeight: "bold" }}>
+                        {business?.businessName}
+                    </Typography>
+                    <Typography style={{ fontSize: "18px" }}>
+                        {business?.businessLocation} - {business?.businessNumber}
+                    </Typography>
                 </div>
-
                 <div style={{ width: "100px", height: "100px", background: "transparent" }}>
                     <img
                         src={business?.logoUrl || logo}
@@ -32,26 +43,28 @@ const PrintableTableComponent = ({reportTitle, columns, data, imageUrl, children
 
             <div style={{ display: "flex", flexDirection: "row", gap: "6px", alignItems: "center" }}>
                 <MdKeyboardArrowRight style={{ fontSize: "18px" }} />
-                <Typography style={{ fontSize: "16px" }}> {reportTitle}</Typography>
+                <Typography style={{ fontSize: "16px" }}>{reportTitle}</Typography>
             </div>
             <MaterialTable
                 title="Printable Table"
-                columns={columns}
+                columns={columnsWithTypes}
                 data={data}
                 options={{
                     pageSize: 40,
                     paging: false,
                     toolbar: false,
+                    sorting: true,
                     showTitle: false,
-                    headerStyle: { fontWeight: "bold", background: "lightgray" }
+                    headerStyle: { fontWeight: "bold", background: "lightgray" },
+                    // defaultSort: "houseNo" // Ensure default sorting by houseNo
                 }}
-                style={{ boxShadow: "none", border: "1px solid gray", marginTop: "15px" }}
+                style={{ boxShadow: "none", border: "1px solid gray", marginTop: "15px",
+                    fontSize: "18px"
+                 }}
             />
-            {/* <div className='print-footer'> BOOKTIRE SYSTEM FOR BUSINESS</div> */}
-
-           {children}
+            {children}
         </div>
     );
 };
 
-export default PrintableTableComponent
+export default PrintableTableComponent;

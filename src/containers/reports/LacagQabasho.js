@@ -79,13 +79,14 @@ const LacagQabasho = ({name, type}) => {
             width: "100%"
         }}>
 
-            <PrintableTableComponent columns={columns} data={transactions} imageUrl={imageUrl} 
+            {/* <PrintableTableComponent columns={columns} data={transactions} imageUrl={imageUrl} 
             reportTitle = {`Lacag Qabasho Report`}> 
             <div style = {{marginTop: "10px"}}>  
                 <Typography style = {{ fontSize: "16px"}}>  TOTAL: 
                 <span  style = {{fontWeight: "bold", fontSize: "18px"}}> ${totalTransactions} </span></Typography>
             </div>
-            </PrintableTableComponent>
+            </PrintableTableComponent> */}
+
             <div style = {{display: "flex", justifyContent: "space-between"}}>
             <div>
                 <Typography style = {{

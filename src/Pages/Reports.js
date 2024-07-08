@@ -2,7 +2,6 @@ import { useState } from "react"
 import { constants } from "../Helpers/constantsFile";
 import { Typography } from "@material-ui/core";
 import PersonalReport from "../containers/reports/PersonalReports";
-import StockSummary from "../containers/reports/StockSummary";
 import InvoicingReport from "../containers/reports/ByAreaReport";
 import ByZoneReport from "../containers/reports/ByZoneReport";
 import LacagQabasho from "../containers/reports/LacagQabasho";

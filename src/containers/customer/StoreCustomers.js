@@ -9,6 +9,7 @@ import { setAreaDataFetched, setAreas } from '../area/areaSlice';
 import Select from "react-select"
 import { addCustomer, updateCustomerAqrisHore } from './customerSlice';
 import { handleAddCustomerBalance } from './customerUtils';
+import { setZoneDataFetched, setZones } from '../zone/zoneSlice';
 
 export default function ({ customers, hide }) {
     const [isChecked, setIsChecked] = useState(true);
@@ -16,8 +17,11 @@ export default function ({ customers, hide }) {
     const { business, _id } = useSelector(state => state.login.activeUser)
     const token = useSelector(state => state.login.token)
     const [selectedArea, setSelectedArea] = useState(null);
+    const [selectedZone, setSelectedZone] = useState(null);
     const areas = useSelector(state => state.areas.areas);
+    const zones = useSelector(state => state.zones?.zones);
     const areaUrl = `${constants.baseUrl}/business-areas/get-business-areas/${business?._id}`
+    const zoneUrl = `${constants.baseUrl}/business-zones/get-business-zones/${business?._id}`
 
     const dispatch = useDispatch()
 
@@ -38,6 +42,14 @@ export default function ({ customers, hide }) {
         state => state.users.isAreasDataFetched,
         "areas"
     );
+ 
+    useReadData(
+        zoneUrl,
+        setZones,
+        setZoneDataFetched,
+        state => state.users.isZonesDataFetched,
+        "zones"
+      );
 
 
     let updatedCustomers = []
@@ -45,13 +57,14 @@ export default function ({ customers, hide }) {
         updatedCustomers.push({
             business: business?._id,
             area: selectedArea?.value,
-            name: data["Name"],
-            phone: data["Phone"]?.toString() || "0000000000",
-            aqrisHore: data["AqrisHore"],
-            houseNo: data["HouseNo"],
-            balance: data["Balance"],
-            damiinName: data["DamiinName"],
-            damiinPhone: data["DamiinPhone"]
+            zone: selectedZone?.value,
+            name: data["Magaca"],
+            phone: data["Number-ka"]?.toString() || "0000000000",
+            aqrisHore: data["mt.hore"] || 0,
+            houseNo: data["Guri Number"],
+            balance: data["Deen Hore"] || 0,
+            damiinName: data["Damiinka"],
+            damiinPhone: data["Number-ka Damiinka"]
         })
     })
 
@@ -119,6 +132,7 @@ export default function ({ customers, hide }) {
         alert("Succesfully Import Data from Excel")
     }
 
+    console.log(updatedCustomers)
 
     return (
         <div style={{
@@ -144,6 +158,26 @@ export default function ({ customers, hide }) {
                                 border: "1px solid lighGray",
                                 height: "40px",
                                 borderRadius: "5px",
+                                fontWeight: "bold",
+                                width: "170px",
+                                minHeight: "28px",
+                                ...(isDisabled && { cursor: "not-allowed" }),
+                            })
+                        }}
+                    />
+                    <Select
+                        placeholder="Select Zone"
+                        options={zones?.map(zone => ({ value: zone._id, label: zone?.zoneName }))}
+                        onChange={selectedOption => setSelectedZone(selectedOption)} // Handle selected area
+                        isClearable={true}
+                        isSearchable={true}
+                        styles={{
+                            control: (styles, { isDisabled }) => ({
+                                ...styles,
+                                border: "1px solid lighGray",
+                                height: "40px",
+                                borderRadius: "5px",
+                                marginLeft:"14px",
                                 fontWeight: "bold",
                                 width: "170px",
                                 minHeight: "28px",
@@ -195,11 +229,11 @@ export default function ({ customers, hide }) {
                         border: "1px solid #ccc", padding: "10px", borderRadius: "5px"
                     }}>
                         <span style={{ flex: 0.2 }}>{index + 1}.</span>
-                        <span style={{ flex: 2 }}>{customer.Name}</span>
-                        <span style={{ flex: 1 }}>{customer.Phone}</span>
-                        <span style={{ flex: 1 }}>{customer.AqrisHore}</span>
-                        <span style={{ flex: 1 }}>{customer.HouseNo}</span>
-                        <span style={{ flex: 1 }}>{isChecked ? `$${customer.Balance}` : 'Hidden'}</span>
+                        <span style={{ flex: 2 }}>{customer.Magaca}</span>
+                        <span style={{ flex: 1 }}>{customer['Number-ka']}</span>
+                        <span style={{ flex: 1 }}>{customer['mt.hore']}</span>
+                        <span style={{ flex: 1 }}>{customer['Guri Number']}</span>
+                        <span style={{ flex: 1 }}>{isChecked ? `$${customer['Deen Hore'] || 0}` : 'Hidden'}</span>
                     </div>
                 ))}
             </div>

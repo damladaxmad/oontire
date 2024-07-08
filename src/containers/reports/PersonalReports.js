@@ -34,8 +34,8 @@ const PersonalReport = ({name, type}) => {
     }
 
     const columns = [
-        { title: "Guri.No.", field: "houseNo", cellStyle: {
-            whiteSpace: 'nowrap' },},
+        { title: "Guri.No.", field: "houseNo", defaultSort: "asc", cellStyle: {
+            whiteSpace: 'nowrap',  },},
         { title: "Full Name", field: "name", cellStyle: {
             whiteSpace: 'nowrap' },},
         { title: "Phone", field: "phone", width: "20%" },

@@ -12,7 +12,7 @@ import { setZoneDataFetched, setZones } from "../zone/zoneSlice";
 
 const ByZoneReport = ({name, type}) => {
 
-    const customers = JSON.parse(JSON.stringify(useSelector(state => state.customers.customers)))
+    const customers = useSelector(state => state.customers.customers).map(customer => ({ ...customer }));
     const [selectedZone, setSelectedZone] = useState(null); // Track selected area
     const {business} = useSelector(state => state.login.activeUser)
     const zones = useSelector(state => state.zones.zones);
@@ -38,7 +38,13 @@ const ByZoneReport = ({name, type}) => {
     })
 
     const columns = [
-        { title: "Guri.No.", field: "houseNo"},
+        { title: "No", field: "houseNo", defaultSort: "asc",
+            render: rowData => rowData.houseNo,
+    headerStyle: {
+      display: 'flex',
+      alignItems: 'center',
+    },
+        },
         { title: "Full Name", field: "name",    cellStyle: {
             whiteSpace: 'nowrap'
            }, },
