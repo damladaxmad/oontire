@@ -63,8 +63,8 @@ export default function ({ customers, hide }) {
             aqrisHore: data["mt.hore"] || 0,
             houseNo: data["Guri Number"],
             balance: data["Deen Hore"] || 0,
-            damiinName: data["Damiinka"],
-            damiinPhone: data["Number-ka Damiinka"]
+            damiinName: data["Damiinka"] || "Empty",
+            damiinPhone: data["Number-ka Damiinka"] || "0000000000"
         })
     })
 

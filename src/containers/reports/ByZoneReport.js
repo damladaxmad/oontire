@@ -39,11 +39,6 @@ const ByZoneReport = ({name, type}) => {
 
     const columns = [
         { title: "No", field: "houseNo", defaultSort: "asc",
-            render: rowData => rowData.houseNo,
-    headerStyle: {
-      display: 'flex',
-      alignItems: 'center',
-    },
         },
         { title: "Full Name", field: "name",    cellStyle: {
             whiteSpace: 'nowrap'

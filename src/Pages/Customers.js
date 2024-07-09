@@ -89,7 +89,7 @@ export default function Customers() {
             if (instance?.status == "closed") return
             if (!instance?.type || instance.type == "deynle")
               return (instance?.name.toLowerCase().includes(query.toLocaleLowerCase()) ||
-              instance.phone.toLowerCase().includes(query?.toLocaleLowerCase()))
+              instance?.phone?.toLowerCase().includes(query?.toLocaleLowerCase()))
           }
         );
       }

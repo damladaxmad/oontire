@@ -21,7 +21,7 @@ export default function ImportCustomers({showCustomers}) {
                 const worksheetName = workbook.SheetNames[0];
                 const worksheet = workbook.Sheets[worksheetName];
                 const data = XLSX.utils.sheet_to_json(worksheet);
-                const sheetName = 'BL4';
+                const sheetName = 'AL3';
                 console.log(data)
                 if (workbook.SheetNames.includes(sheetName)) {
                     const worksheet = workbook.Sheets[sheetName];

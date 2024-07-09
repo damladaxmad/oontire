@@ -96,10 +96,12 @@ const Transactions = ({ instance, client, url, hideTransactions, }) => {
         },
     };
 
-    let balance = null
-    transactions?.map(transaction => {
-        balance += transaction?.debit - transaction?.credit
-    })
+    let balance = 0;
+    transactions.forEach(transaction => {
+        balance += transaction.debit - transaction.credit;
+    });
+
+    console.log(transactions)
 
 
     const columns = [
@@ -144,17 +146,17 @@ const Transactions = ({ instance, client, url, hideTransactions, }) => {
 
     ];
 
-    useEffect(() => {
+    // useEffect(() => {
 
-        const socket = io.connect('https://oontire-api.onrender.com');
-        socket.on('transactionEvent', (data) => {
-            handleTransactionEvent(data)
-        });
+    //     const socket = io.connect('https://oontire-api.onrender.com');
+    //     socket.on('transactionEvent', (data) => {
+    //         handleTransactionEvent(data)
+    //     });
 
-        return () => {
-            socket.disconnect();
-        };
-    }, []);
+    //     return () => {
+    //         socket.disconnect();
+    //     };
+    // }, []);
 
 
     const handleTransactionEvent = (data) => {
@@ -265,7 +267,7 @@ const Transactions = ({ instance, client, url, hideTransactions, }) => {
                     <Typography style={{
                         fontSize: "20px", fontWeight: "bold"
                     }}>
-                        {constants?.moneySign}{balance ? balance?.toFixed(2) : instance?.balance?.toFixed(2)}
+                        {constants?.moneySign}{balance || balance == 0 ? balance?.toFixed(2) : instance?.balance?.toFixed(2)}
                     </Typography>
                 </div>
 
