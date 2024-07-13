@@ -77,8 +77,8 @@ function Transaction({ data, index }) {
             }}></div>
 
             <div style={{ display: "flex", flexDirection: "column",  flex: 1  }}>
-                <Typography style={{ fontSize: "15px", fontWeight: "bold",}}> {data?.customer?.name?.substring(0, 17)}
-              {data?.customer?.name?.length <= 17 ? null : "..."}</Typography>
+                <Typography style={{ fontSize: "15px", fontWeight: "bold",}}> {data?.customer?.name?.substring(0, 14)}
+              {data?.customer?.name?.length <= 14 ? null : "..."}</Typography>
                 <Typography style={{ fontSize: "14px", color: "#B4B4B4" }}> {moment(data?.date).format("YYYY-MM-DD")}</Typography>
             </div>
             <Typography style={{ fontSize: "15px", flex: 0.5,  }}> {data?.transactionType}</Typography>

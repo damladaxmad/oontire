@@ -197,6 +197,11 @@ export default function NewLayout({children}) {
     handleShow(location.pathname)
   }, [location])
 
+  useEffect(() => {
+    if (activeUser?.privileges?.includes("Dashboard"))
+    navigate("/dashboard")
+  }, [navigate])
+
   return (
     <div style={{   display: "flex",
     width: "100%" }}>

@@ -6,11 +6,14 @@ import axios from "axios";
 import SmsSuccess from "../containers/sms/SmsSuccess";
 import Loading from "../containers/sms/Loading";
 import CustomButton from "../reusables/CustomButton";
-import Select from "react-select"
+import Select from "react-select";
+import { setZoneDataFetched, setZones } from "../containers/zone/zoneSlice";
+import useReadData from "../hooks/useReadData";
 
 const SendSMS = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCustomers, setSelectedCustomers] = useState([]);
+  const { business } = useSelector((state) => state.login.activeUser);
   const token = useSelector((state) => state.login?.token);
   const activeUser = useSelector((state) => state.login?.activeUser);
   const customers = useSelector((state) => state.customers.customers);
@@ -18,11 +21,22 @@ const SendSMS = () => {
   const [showSuccess, setShowSuccess] = useState(false)
   const [successData, setSuccessData] = useState()
   const [loading, setLoading] = useState(false)
+  const [selectedZone, setSelectedZone] = useState(null);
   const [password, setPassword] = useState("") 
   const [message, setMessage] = useState("") 
   const [customCheck, setCustomCheck] = useState(true)
   const [text, setText] = useState('');
   const maxLength = 110;
+  const zoneUrl = `${constants.baseUrl}/business-zones/get-business-zones/${business?._id}`;
+  const zones = useSelector((state) => state.zones.zones);
+
+  useReadData(
+    zoneUrl,
+    setZones,
+    setZoneDataFetched,
+    (state) => state.zones.isZoneDataFetched,
+    "zones"
+  );
 
   const handleChange = (event) => {
     const inputText = event.target.value;
@@ -62,8 +76,15 @@ const SendSMS = () => {
     setSelectedCustomers(updatedSelectedCustomers);
   };
 
+  let filteredCustomers = []
+  customers?.map(customer => {
+    console.log(customer)
+    if (selectedZone && customer?.zone?._id == selectedZone?.value && customer?.balance > 0) 
+    filteredCustomers.push(customer)
+  })
+
   const handleSelectAllCustomers = () => {
-    const allCustomerIds = customers.map((customer) => customer._id);
+    const allCustomerIds = filteredCustomers?.map((customer) => customer._id);
     setSelectedCustomers(
       selectedCustomers.length === allCustomerIds.length ? [] : allCustomerIds
     );
@@ -172,11 +193,23 @@ const SendSMS = () => {
           }}
         />
 
+<Select
+        placeholder="Select Zone"
+        options={zones?.map((zone) => ({
+          value: zone._id,
+          label: zone.zoneName,
+        }))}
+        onChange={(selectedOption) => setSelectedZone(selectedOption)} // Handle selected area
+        isClearable={true}
+        isSearchable={true}
+        style={{ width: "30%" }}
+      />
+
         <label>
           <input
             type="checkbox"
             onChange={handleSelectAllCustomers}
-            checked={selectedCustomers.length === customers.length}
+            checked={selectedCustomers.length === filteredCustomers?.length}
             id="smsCheck"
             style={{
               transform: "scale(1.5)",
@@ -187,7 +220,7 @@ const SendSMS = () => {
           Select All{" "}
           {selectedCustomers.length > 0 && `(${selectedCustomers.length})`}
         </label>
-
+{/* 
         <label>
           <input
             type="checkbox"
@@ -201,7 +234,7 @@ const SendSMS = () => {
             }}
           />
           Custom
-        </label>
+        </label> */}
 
 
 
@@ -211,7 +244,7 @@ const SendSMS = () => {
         />
       </div>
 
-     {customCheck && <TextField
+     {/* {customCheck && <TextField
         label={`${text.length}/${maxLength}`}
         variant="outlined"
         multiline
@@ -219,7 +252,7 @@ const SendSMS = () => {
         onChange={handleChange}
         style = {{fontSize: "16px", marginTop: "20px"}}
         inputProps={{ maxLength: maxLength }}
-      />}
+      />} */}
 
       <div
         style={{
@@ -229,12 +262,11 @@ const SendSMS = () => {
           marginTop: "20px",
         }}
       >
-        {customers
+        {filteredCustomers
           .filter(
             (customer) =>
               customer.name.toLowerCase().includes(searchTerm) ||
-              customer.phone.toLowerCase().includes(searchTerm) ||
-              customer.balance.toString().includes(searchTerm)
+              customer.phone.toLowerCase().includes(searchTerm) 
           )
           .map((customer) => (
             <div
@@ -260,14 +292,17 @@ const SendSMS = () => {
                 id="smsCheck"
                 style={{ transform: "scale(1.5)", cursor: "pointer", color: constants.pColor }}
               />
-              <Typography style={{ fontSize: "16px", flex: 1 }}>
+              <Typography style={{ fontSize: "16px", flex: 1.5 }}>
                 {customer.name}
               </Typography>
-              <Typography style={{ fontSize: "16px", flex: 1 }}>
+              <Typography style={{ fontSize: "16px", flex: 0.8 }}>
                 {customer.phone}
               </Typography>
+              <Typography style={{ fontSize: "16px", flex: 0.5 }}>
+                {customer.zone?.zoneName}
+              </Typography>
               <Typography
-                style={{ fontSize: "16px", flex: 1, marginLeft: "auto" }}
+                style={{ fontSize: "16px", flex: 0.5, marginLeft: "auto" }}
               >
                 {/* ${customer.balance?.toFixed(2)} */}
                 {customer.balance >= 0 ? `$${customer.balance.toFixed(2)}` : `-$${Math.abs(customer.balance).toFixed(2)}`}

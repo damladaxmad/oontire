@@ -249,13 +249,13 @@ const Transactions = ({ instance, client, url, hideTransactions, }) => {
                     <Typography style={{
                         fontSize: "18px", fontWeight: "bold"
                     }}>
-                        {instance.name}
+                        {instance?.name}
                     </Typography>
                     <Typography style={{
                         color: "#7F7F7F",
                         fontSize: "18px"
                     }}>
-                        {instance.phone}
+                        {instance?.phone}
                     </Typography>
                 </div>
 

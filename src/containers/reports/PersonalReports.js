@@ -36,8 +36,9 @@ const PersonalReport = ({name, type}) => {
     const columns = [
         { title: "Guri.No.", field: "houseNo", defaultSort: "asc", cellStyle: {
             whiteSpace: 'nowrap',  },},
-        { title: "Full Name", field: "name", cellStyle: {
-            whiteSpace: 'nowrap' },},
+            { title: "Full Name", field: "name", render: (data) =>                 <Typography style={{ }}> {data?.name?.substring(0, 46)}
+            {data?.name?.length <= 17 ? null : "..."}</Typography>,
+          cellStyle: { whiteSpace: 'nowrap' } },
         { title: "Phone", field: "phone", width: "20%" },
         { title: "Area", field: "area", render: (data) => <p> {data?.area?.areaName}</p> },
         { title: "Zone", field: "zone", render: (data) => <p> {data.zone?.zoneName}</p> },

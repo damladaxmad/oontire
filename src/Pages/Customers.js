@@ -17,6 +17,8 @@ import useReadData from "../hooks/useReadData";
 import useEventHandler from "../hooks/useEventHandler";
 import { handleAddCustomerBalance, handleDeleteCustomerBalance, handleUpdateCustomerBalance } from "../containers/customer/customerUtils";
 import axios from "axios";
+import Select from "react-select";
+import { setZoneDataFetched, setZones } from "../containers/zone/zoneSlice";
 
 const parentDivStyle = {
   display: "flex",
@@ -28,29 +30,37 @@ const parentDivStyle = {
 }
 
 export default function Customers() {
-  const [query, setQuery] = useState("")
-  const [showTransactions, setShowTransactions] = useState(false)
-  const [instance, setInstance] = useState(null)
-  const { business, privileges, _id } = useSelector(state => state.login.activeUser)
-  const mySocketId = useSelector(state => state?.login?.mySocketId)
-  const token = useSelector(state => state.login.token)
-  const url = `${constants.baseUrl}/customers/get-business-customers/${business?._id}`
-  const customers = JSON.parse(JSON.stringify(useSelector(state => state.customers?.customers || [])))
-  const transactions = JSON.parse(JSON.stringify(useSelector(state => state.transactions.transactions)))
+  const [query, setQuery] = useState("");
+  const [showTransactions, setShowTransactions] = useState(false);
+  const [instance, setInstance] = useState(null);
+  const { business, privileges, _id } = useSelector(state => state.login.activeUser);
+  const mySocketId = useSelector(state => state?.login?.mySocketId);
+  const [selectedZone, setSelectedZone] = useState(null);
+  const token = useSelector(state => state.login.token);
+  const url = `${constants.baseUrl}/customers/get-business-customers/${business?._id}`;
+  const customers = JSON.parse(JSON.stringify(useSelector(state => state.customers?.customers || [])));
+  const transactions = JSON.parse(JSON.stringify(useSelector(state => state.transactions.transactions)));
+  const zoneUrl = `${constants.baseUrl}/business-zones/get-business-zones/${business?._id}`;
+  const zones = useSelector((state) => state.zones.zones);
 
-  const dispatch = useDispatch()
+  useReadData(
+    zoneUrl,
+    setZones,
+    setZoneDataFetched,
+    (state) => state.zones.isZoneDataFetched,
+    "zones"
+  );
+  const dispatch = useDispatch();
 
-  console.log(customers)
-  
   const { showRegister, update, toBeUpdatedCustomer,
-    handleUpdate, handleHide, handleShowRegister } = useRegisterForm()
+    handleUpdate, handleHide, handleShowRegister } = useRegisterForm();
 
-    const { loading, error } = useReadData(
-     url,
-      setCustomers,
-      setCustomerDataFetched,
-      state => state.customers.isCustomerDataFetched,
-      "customers"
+  const { loading, error } = useReadData(
+    url,
+    setCustomers,
+    setCustomerDataFetched,
+    state => state.customers.isCustomerDataFetched,
+    "customers"
   );
 
   const notify = (message) => toast(message, {
@@ -75,27 +85,15 @@ export default function Customers() {
   ];
 
   const handler = (data) => {
-    if (data?.length > 0) {
-      if (query == "") {
-        return data
-          .filter((instance) => {
-            if (instance?.status == "closed") return
-            if (!instance?.type || instance?.type == "deynle")
-              return instance.balance >= 0 || instance.balance <= 0;
-          })
-      } else {
-        return data?.filter(
-          (instance) => {
-            if (instance?.status == "closed") return
-            if (!instance?.type || instance.type == "deynle")
-              return (instance?.name.toLowerCase().includes(query.toLocaleLowerCase()) ||
-              instance?.phone?.toLowerCase().includes(query?.toLocaleLowerCase()))
-          }
-        );
+    return data.filter(instance => {
+      if (instance?.status === "closed") return false;
+      if (!instance?.type || instance?.type === "deynle") {
+        const matchesQuery = query === "" || instance?.name.toLowerCase().includes(query.toLowerCase()) || instance?.phone?.toLowerCase().includes(query.toLowerCase());
+        const matchesZone = !selectedZone || instance?.zone?._id === selectedZone.value;
+        return matchesQuery && matchesZone;
       }
-    } else {
-      return;
-    }
+      return false;
+    });
   };
 
   const handleSearchChange = (value) => {
@@ -105,10 +103,10 @@ export default function Customers() {
   const calculateBalanceForCustomer = (transactions) => {
     let balance = 0;
     transactions.forEach(transaction => {
-        balance += transaction.debit - transaction.credit;
+      balance += transaction.debit - transaction.credit;
     });
     return balance;
-};
+  };
 
   const { handleEvent } = useEventHandler();
 
@@ -119,78 +117,65 @@ export default function Customers() {
     });
 
     socket.on('transactionEvent', (data) => {
-      handleTransactionEvent(data)
-  });
+      handleTransactionEvent(data);
+    });
     return () => {
       socket.disconnect();
     };
   }, []);
 
   const handleTransactionEvent = (data) => {
-
     const { socketId, businessId, transaction, eventType } = data;
-    if (mySocketId == socketId) return
-    if (business?._id !== businessId) return
+    if (mySocketId === socketId) return;
+    if (business?._id !== businessId) return;
     if (eventType === 'add') {
-      let newTransaction = transaction?.debit == 0 ? -transaction?.credit : transaction?.debit
-      let newAqrisHore = transaction?.aqrisDanbe
-      dispatch(updateCustomerSocketBalance({_id: transaction?.customer?._id, transaction: newTransaction}))
+      let newTransaction = transaction?.debit === 0 ? -transaction?.credit : transaction?.debit;
+      let newAqrisHore = transaction?.aqrisDanbe;
+      dispatch(updateCustomerSocketBalance({ _id: transaction?.customer?._id, transaction: newTransaction }));
       dispatch(updateCustomerAqrisHore({ customerId: transaction?.customer?._id, newAqrisHore }));
     } else if (eventType === 'delete') {
-      let newTransaction = transaction?.debit == 0 ? transaction?.credit : -transaction?.debit
-      dispatch(updateCustomerSocketBalance({_id: transaction?.customer, transaction: newTransaction}))
-    } else if (eventType === 'update') {
+      let newTransaction = transaction?.debit === 0 ? transaction?.credit : -transaction?.debit;
+      dispatch(updateCustomerSocketBalance({ _id: transaction?.customer, transaction: newTransaction }));
     }
+  };
 
-};
-
-const calculateBalance = (transactions) => {
-  let balance = 0;
-  transactions?.forEach(transaction => {
+  const calculateBalance = (transactions) => {
+    let balance = 0;
+    transactions?.forEach(transaction => {
       balance += transaction.debit - transaction.credit;
-  });
-  return balance;
-};
+    });
+    return balance;
+  };
 
-const createReesto = (customer, reesto) => {
-  if (!reesto || reesto == 0) return
-  axios.post(
-    `${constants.baseUrl}/transactions`,
-    {
+  const createReesto = (customer, reesto) => {
+    if (!reesto || reesto === 0) return;
+    axios.post(
+      `${constants.baseUrl}/transactions`,
+      {
         business: business?._id,
         customer: customer?._id,
         description: "Reesto",
         transactionType: "charge",
-        aqrisHore:(customer?.aqrisHore * 1.5 - reesto ) / 1.5,
+        aqrisHore: (customer?.aqrisHore * 1.5 - reesto) / 1.5,
         user: _id,
         aqrisDanbe: customer?.aqrisHore,
         debit: reesto,
         date: new Date()
-    },
-    {
+      },
+      {
         headers: {
-            "authorization": token
+          "authorization": token
         }
-    }
-).then(res => {
-    console.log("sucess")
-    let newAqrisHore = res?.data?.data?.transaction.aqrisDanbe
-    let response = res?.data?.data?.transaction
-    dispatch(updateCustomerAqrisHore({ customerId: customer?._id, newAqrisHore }));
-    handleAddCustomerBalance(dispatch, [], calculateBalance, response);
-}).catch(err => {
-    alert(err?.response?.data?.message)
-})
-}
-
-
-
-// if (!privileges?.includes("Customers")) return (
-//   <div style = {parentDivStyle}>
-//     <Typography> You cannot access this tab</Typography>
-//   </div>
-// )
-
+      }
+    ).then(res => {
+      let newAqrisHore = res?.data?.data?.transaction.aqrisDanbe;
+      let response = res?.data?.data?.transaction;
+      dispatch(updateCustomerAqrisHore({ customerId: customer?._id, newAqrisHore }));
+      handleAddCustomerBalance(dispatch, [], calculateBalance, response);
+    }).catch(err => {
+      alert(err?.response?.data?.message);
+    });
+  };
 
   return (
     <div style={parentDivStyle}>
@@ -199,7 +184,24 @@ const createReesto = (customer, reesto) => {
         btnName="Abuur Macaamiil" onClick={handleShowRegister} />}
 
       {!showTransactions && <CustomRibbon query={query}
-        setQuery={handleSearchChange} />}
+        setQuery={handleSearchChange} >
+        {/* Zone Select Dropdown */}
+        {!showTransactions && (
+          <div>
+            <Select
+              placeholder="Select Zone"
+              options={zones?.map((zone) => ({
+                value: zone._id,
+                label: zone.zoneName,
+              }))}
+              onChange={(selectedOption) => setSelectedZone(selectedOption)} // Handle selected zone
+              isClearable={true}
+              isSearchable={true}
+              style={{ width: "30%" }}
+            />
+          </div>
+        )}
+      </CustomRibbon>}
 
       {!showTransactions && <Table
         data={handler(customers)} columns={columns}
@@ -210,8 +212,8 @@ const createReesto = (customer, reesto) => {
         }}
 
         onSeeTransactions={(data) => {
-          setInstance(data)
-          setShowTransactions(true)
+          setInstance(data);
+          setShowTransactions(true);
         }}
 
         onDelete={(data) => {
@@ -219,16 +221,16 @@ const createReesto = (customer, reesto) => {
             data.name,
             `${constants.baseUrl}/customers/close-customer-statement/${data?._id}`,
             token,
-            () => { dispatch(deleteCustomer(data)) })
-        }} 
-        
-        onClickRow={(data) => {
-          setInstance(data)
-          setShowTransactions(true)
+            () => { dispatch(deleteCustomer(data)) });
         }}
-        />}
 
-      {showRegister && <Register
+        onClickRow={(data) => {
+          setInstance(data);
+          setShowTransactions(true);
+        }}
+      />}
+
+{showRegister && <Register
         instance={toBeUpdatedCustomer}
         update={update}
         name="Customer"
@@ -251,14 +253,13 @@ const createReesto = (customer, reesto) => {
           }
         } />}
 
-      {showTransactions && <Transactions
+
+     {showTransactions && <Transactions
         instance={instance}
         client= "customer"
         url={`${constants.baseUrl}/transactions/get-customer-transactions/${instance?._id}`}
         hideTransactions={() => setShowTransactions(false)} />}
-
       <ToastContainer />
-
     </div>
-  )
+  );
 }

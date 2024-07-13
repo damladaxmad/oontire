@@ -114,7 +114,7 @@ onGiveAccess, onClickRow }) => {
           draggable: false,
           actionsColumnIndex: -1,
           headerStyle: { background: "#EFF0F6", fontSize: "13px", 
-        padding: "0px", fontWeight: "bold" },
+        padding: "0px", fontWeight: "bold", zIndex: 0 },
         }}
         actions={[
           {
