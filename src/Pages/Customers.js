@@ -40,8 +40,8 @@ export default function Customers() {
   const url = `${constants.baseUrl}/customers/get-business-customers/${business?._id}`;
   const customers = JSON.parse(JSON.stringify(useSelector(state => state.customers?.customers || [])));
   const transactions = JSON.parse(JSON.stringify(useSelector(state => state.transactions.transactions)));
-  const zoneUrl = `${constants.baseUrl}/business-zones/get-business-zones/${business?._id}`;
   const zones = useSelector((state) => state.zones.zones);
+  const zoneUrl = `${constants.baseUrl}/business-zones/get-business-zones/${business?._id}`;
 
   useReadData(
     zoneUrl,

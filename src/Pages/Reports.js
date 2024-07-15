@@ -6,9 +6,22 @@ import InvoicingReport from "../containers/reports/ByAreaReport";
 import ByZoneReport from "../containers/reports/ByZoneReport";
 import LacagQabasho from "../containers/reports/LacagQabasho";
 import ZoneSummary from "../containers/reports/ZoneSummary";
+import { useSelector } from "react-redux";
+import { setCustomerDataFetched, setCustomers } from "../containers/customer/customerSlice";
+import useReadData from "../hooks/useReadData";
 
 export default function Reports() {
   const [currentTab, setCurrentTab] = useState(0)
+  const { business } = useSelector((state) => state.login.activeUser);
+  const customerUrl = `${constants.baseUrl}/customers/get-business-customers/${business?._id}`;
+
+  useReadData(
+    customerUrl,
+    setCustomers,
+    setCustomerDataFetched,
+    (state) => state.customers.isCustomersDataFetched,
+    "customers"
+  );
 
   const handleTabChange = (tabIndex) => {
     setCurrentTab(tabIndex);

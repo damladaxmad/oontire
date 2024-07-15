@@ -9,6 +9,7 @@ import CustomButton from "../reusables/CustomButton";
 import Select from "react-select";
 import { setZoneDataFetched, setZones } from "../containers/zone/zoneSlice";
 import useReadData from "../hooks/useReadData";
+import { setCustomerDataFetched, setCustomers } from "../containers/customer/customerSlice";
 
 const SendSMS = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -16,19 +17,25 @@ const SendSMS = () => {
   const { business } = useSelector((state) => state.login.activeUser);
   const token = useSelector((state) => state.login?.token);
   const activeUser = useSelector((state) => state.login?.activeUser);
-  const customers = useSelector((state) => state.customers.customers);
-  const [smsType, setSmsType] = useState("all")
   const [showSuccess, setShowSuccess] = useState(false)
   const [successData, setSuccessData] = useState()
   const [loading, setLoading] = useState(false)
   const [selectedZone, setSelectedZone] = useState(null);
-  const [password, setPassword] = useState("") 
-  const [message, setMessage] = useState("") 
   const [customCheck, setCustomCheck] = useState(true)
   const [text, setText] = useState('');
   const maxLength = 110;
   const zoneUrl = `${constants.baseUrl}/business-zones/get-business-zones/${business?._id}`;
   const zones = useSelector((state) => state.zones.zones);
+  const customers = useSelector((state) => state.customers.customers);
+  const customerUrl = `${constants.baseUrl}/customers/get-business-customers/${business?._id}`;
+
+  useReadData(
+    customerUrl,
+    setCustomers,
+    setCustomerDataFetched,
+    (state) => state.customers.isCustomersDataFetched,
+    "customers"
+  );
 
   useReadData(
     zoneUrl,
@@ -45,16 +52,9 @@ const SendSMS = () => {
     }
   };
 
+
   const handleSearch = (event) => {
     setSearchTerm(event.target.value.toLowerCase());
-  };
-
-  const handlePassword = (event) => {
-    setPassword(event.target.value);
-  };
-
-  const handleMessage = (event) => {
-    setMessage(event.target.value);
   };
 
   
@@ -79,7 +79,8 @@ const SendSMS = () => {
   let filteredCustomers = []
   customers?.map(customer => {
     console.log(customer)
-    if (selectedZone && customer?.zone?._id == selectedZone?.value && customer?.balance > 0) 
+    if (customer?.balance <= 0) return
+    if (selectedZone && customer?.zone?._id != selectedZone?.value) return 
     filteredCustomers.push(customer)
   })
 
@@ -93,6 +94,7 @@ const SendSMS = () => {
   const handleCustomCheck = () => {
     setCustomCheck(state => !state)
   }
+
 
   const handleSendSMS = () => {
     setLoading(true)
@@ -111,7 +113,7 @@ const SendSMS = () => {
         {
           "businessId": activeUser?.business?._id,
           "customers": updatedCustomers,
-          "message": message
+          "message": customCheck && text
           },
         {
           headers: {
@@ -157,26 +159,9 @@ const SendSMS = () => {
           display: "flex",
           flexDirection: "row",
           justifyContent: "space-between",
-          gap: "50px",
         }}
       >
 
-{/* <Select
-        value={saleTypeOptions.find(option => option.value === smsType)}
-        options={saleTypeOptions}
-        onChange={(selectedOption) => setSmsType(selectedOption.value)}
-        styles={{
-          control: (styles, { isDisabled }) => ({
-            ...styles,
-            border: "1px solid grey",
-            height: "40px",
-            borderRadius: "5px",
-            width: "140px",
-            minHeight: "28px",
-            ...(isDisabled && { cursor: "not-allowed" }),
-          })
-        }}
-      /> */}
         <input
           type="text"
           placeholder="Search customers"
@@ -199,7 +184,7 @@ const SendSMS = () => {
           value: zone._id,
           label: zone.zoneName,
         }))}
-        onChange={(selectedOption) => setSelectedZone(selectedOption)} // Handle selected area
+        onChange={(selectedOption) => setSelectedZone(selectedOption)} 
         isClearable={true}
         isSearchable={true}
         style={{ width: "30%" }}
@@ -220,7 +205,7 @@ const SendSMS = () => {
           Select All{" "}
           {selectedCustomers.length > 0 && `(${selectedCustomers.length})`}
         </label>
-{/* 
+
         <label>
           <input
             type="checkbox"
@@ -234,9 +219,7 @@ const SendSMS = () => {
             }}
           />
           Custom
-        </label> */}
-
-
+        </label>
 
         <CustomButton
           onClick={handleSendSMS}
@@ -244,7 +227,7 @@ const SendSMS = () => {
         />
       </div>
 
-     {/* {customCheck && <TextField
+     {customCheck && <TextField
         label={`${text.length}/${maxLength}`}
         variant="outlined"
         multiline
@@ -252,7 +235,7 @@ const SendSMS = () => {
         onChange={handleChange}
         style = {{fontSize: "16px", marginTop: "20px"}}
         inputProps={{ maxLength: maxLength }}
-      />} */}
+      />}
 
       <div
         style={{
@@ -304,7 +287,6 @@ const SendSMS = () => {
               <Typography
                 style={{ fontSize: "16px", flex: 0.5, marginLeft: "auto" }}
               >
-                {/* ${customer.balance?.toFixed(2)} */}
                 {customer.balance >= 0 ? `$${customer.balance.toFixed(2)}` : `-$${Math.abs(customer.balance).toFixed(2)}`}
               </Typography>
             </div>

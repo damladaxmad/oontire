@@ -17,6 +17,7 @@ const SubMenu = ({ item }) => {
     flexDirection: "row",
     justifyContent: "space-between",
     color: "white",
+    cursor: "pointer",
     // background: isActive && "#9300FF"
     background: isActive && constants.activeTabColor
   };
