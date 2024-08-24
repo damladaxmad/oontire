@@ -9,6 +9,7 @@ import ZoneSummary from "../containers/reports/ZoneSummary";
 import { useSelector } from "react-redux";
 import { setCustomerDataFetched, setCustomers } from "../containers/customer/customerSlice";
 import useReadData from "../hooks/useReadData";
+import Discounts from "../containers/reports/Discounts";
 
 export default function Reports() {
   const [currentTab, setCurrentTab] = useState(0)
@@ -105,6 +106,23 @@ export default function Reports() {
         Qabasho
         </div>
         <div
+          onClick={() => handleTabChange(5)}
+          style={{
+           padding: '5px 0px',
+            width: "100px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            marginRight: '10px',
+            cursor: 'pointer',
+            backgroundColor: currentTab === 5 ? constants.pColor : 'transparent',
+            color: currentTab === 5 ? 'white' : 'black',
+            borderRadius: '50px',
+            border: `1px solid ${constants.pColor}`
+          }}>
+        Discounts
+        </div>
+        <div
           onClick={() => handleTabChange(4)}
           style={{
            padding: '5px 0px',
@@ -129,6 +147,7 @@ export default function Reports() {
       {currentTab == 2 && <ByZoneReport name = "customers" type = "Invoicing"/>}
       {currentTab == 3 && <LacagQabasho name = "customers" type = "Invoicing"/>}
       {currentTab == 4 && <ZoneSummary name = "customers" type = "Invoicing"/>}
+      {currentTab == 5 && <Discounts name = "customers" type = "Invoicing"/>}
       </div>
     )
   }

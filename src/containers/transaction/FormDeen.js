@@ -9,10 +9,10 @@ import moment from "moment";
 import { deleteFunction } from "../../funcrions/deleteStuff";
 import CustomButton from "../../reusables/CustomButton";
 import { addTransaction, deleteTransaction, updateTransaction } from "./transactionSlice";
-import { updateCustomerAqrisDanbe, updateCustomerAqrisHore, updateCustomerBalance } from "../customer/customerSlice";
+import { updateCustomerAqrisHore, updateCustomerBalance } from "../customer/customerSlice";
 import { handleAddCustomerBalance, handleDeleteCustomerBalance, handleUpdateCustomerBalance } from "../customer/customerUtils";
 
-const TransactionForm = ({ type, kind, update, instance, transaction, client, hideModal }) => {
+const FormDeen = ({ type, update, instance, transaction, client, hideModal }) => {
 
     const [disabled, setDisabled] = useState(false)
     const token = useSelector(state => state.login.token)
@@ -47,10 +47,8 @@ const TransactionForm = ({ type, kind, update, instance, transaction, client, hi
         { label: "", type: "date", name: "date" },
     ] :
         [
-            { label: "Geli A.HORE", type: "number", name: "aqrisHore" },
-            { label: "Geli A.DAMBE", type: "number", name: "aqrisDanbe" },
-        { label: "Total-ka", type: "number", name: "debit" },
-            // { label: "Geli Faahfaahin", type: "text", name: "description" },
+            { label: "Geli Lacagta", type: "number", name: "debit" },
+            { label: "Geli Faahfaahin", type: "text", name: "description" },
             { label: "", type: "date", name: "date" },
         ];
 
@@ -80,18 +78,12 @@ const TransactionForm = ({ type, kind, update, instance, transaction, client, hi
     const validate = (values) => {
         const errors = {};
 
-        if (!values.aqrisHore && type == "deen" && values.aqrisHore !== 0) {
-            errors.aqrisHore = "Field is Required";
+        if (!values.debit) {
+            errors.debit = "Field is Required";
         }
-        if (!values.aqrisDanbe && type == "deen") {
-            errors.aqrisDanbe = "Field is Required";
+        if (!values.description) {
+            errors.description = "Field is Required";
         }
-        if (!values.credit && type == "bixin") {
-            errors.credit = "Field is Required";
-        }
-        // if (!values.description && type == "deen") {
-        //     errors.description = "Field is Required";
-        // }
         return errors;
     };
 
@@ -99,24 +91,18 @@ const TransactionForm = ({ type, kind, update, instance, transaction, client, hi
         initialValues: {
             description: update ? transaction.description : "",
             debit: update ? transaction?.debit : "",
-            aqrisHore: update ? transaction.aqrisHore : newCustomer?.aqrisHore,
-            aqrisDanbe: update ? transaction.aqrisDanbe : "",
             credit: update ? transaction.credit : "",
             date: update ? moment(transaction.date).format("YYYY-MM-DD") :
                 moment(today).format("YYYY-MM-DD")
         },
         validate,
         onSubmit: async (values, { resetForm }) => {
-        let rate = instance?.rate || 1.5
             if (type === "deen") {
         values.credit = 0;
-        values.debit = (values.aqrisDanbe - values.aqrisHore) * rate;
-        values.description = `${values.aqrisDanbe} - ${values.aqrisHore}`;
-        } else if (type === "bixin") {
-        values.debit = 0;
-        values.description = values.description || kind == "discount" ? "Discount" : "Payment"
-        }
-            values.transactionType = type === "bixin" ? kind == "discount" ? "discount" : "payment" : "charge";
+        } 
+            values.transactionType = type === "bixin" ? "payment" : "charge";
+            values.aqrisHore = instance?.aqrisHore
+            values.aqrisDanbe = instance?.aqrisHore
             values[client] = instance?._id
             values.user = activeUser._id
             values.socketId = mySocketId
@@ -157,13 +143,6 @@ const TransactionForm = ({ type, kind, update, instance, transaction, client, hi
                         }
                     }).then((res) => {
                         setDisabled(false);
-                       
-                        if (type == "deen") {
-                            let newAqrisDanbe = res?.data?.data?.transaction.aqrisHore;
-                            dispatch(updateCustomerAqrisDanbe({ customerId: instance?._id, newAqrisDanbe }));
-                            let newAqrisHore = res?.data?.data?.transaction.aqrisDanbe
-                            dispatch(updateCustomerAqrisHore({ customerId: instance?._id, newAqrisHore }));
-                        }
                       
                         dispatch(addTransaction(res?.data?.data?.transaction));
                         let response = res?.data?.data?.transaction
@@ -223,7 +202,6 @@ const TransactionForm = ({ type, kind, update, instance, transaction, client, hi
                 {arr.map((a, index) => (
                     <div key={index}>
                         <input
-                            disabled = {a.name == "debit"}
                             placeholder={a.label}
                             id={a.name}
                             name={a.name}
@@ -259,4 +237,4 @@ const TransactionForm = ({ type, kind, update, instance, transaction, client, hi
     );
 };
 
-export default TransactionForm;
+export default FormDeen;

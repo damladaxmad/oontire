@@ -7,7 +7,7 @@ import { Typography } from "@material-ui/core";
 import moment from "moment";
 import CustomButton from "../reusables/CustomButton";
 import { addTransaction } from "../containers/transaction/transactionSlice";
-import { setCustomerDataFetched, setCustomers, updateCustomerAqrisHore, updateCustomerSocketBalance } from "../containers/customer/customerSlice";
+import { setCustomerDataFetched, setCustomers, updateCustomerAqrisHore, updateCustomerAqrisDanbe,  updateCustomerSocketBalance } from "../containers/customer/customerSlice";
 import { handleAddCustomerBalance } from "../containers/customer/customerUtils";
 import Select from 'react-select'; // Import react-select
 import useReadData from "../hooks/useReadData";
@@ -64,10 +64,10 @@ const TransactionForm = () => {
 
     const validate = (values) => {
         const errors = {};
-        if (!values.aqrisHore) {
+        if (!values.aqrisHore && values.aqrisHore != 0) {
             errors.aqrisHore = "Field is Required";
         }
-        if (!values.aqrisDanbe) {
+        if (!values.aqrisDanbe && values.aqrisDanbe != 0) {
             errors.aqrisDanbe = "Field is Required";
         }
         return errors;
@@ -84,8 +84,10 @@ const TransactionForm = () => {
         },
         validate,
         onSubmit: async (values, { resetForm }) => {
+            console.log(newCustomer)
+            let rate = newCustomer?.rate || 1.5
             values.credit = 0;
-            values.debit = (values.aqrisDanbe - values.aqrisHore) * 1.5;
+            values.debit = (values.aqrisDanbe - values.aqrisHore) * rate;
             values.description = `${values.aqrisDanbe} - ${values.aqrisHore}`;
             values.transactionType = "charge";
             values.customer = selectedCustomer?.value;
@@ -102,6 +104,8 @@ const TransactionForm = () => {
                 let debit = res?.data?.data?.transaction?.debit;
                 dispatch(updateCustomerSocketBalance({ _id: selectedCustomer?.value, transaction: debit }));
                 let newAqrisHore = res?.data?.data?.transaction.aqrisDanbe;
+                let newAqrisDanbe = res?.data?.data?.transaction.aqrisHore;
+                dispatch(updateCustomerAqrisDanbe({ customerId: selectedCustomer?.value, newAqrisDanbe }));
                 dispatch(updateCustomerAqrisHore({ customerId: selectedCustomer?.value, newAqrisHore }));
                 resetForm(); // Reset the form
                 setSelectedCustomer(null);

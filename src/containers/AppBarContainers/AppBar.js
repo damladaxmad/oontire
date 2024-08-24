@@ -11,6 +11,7 @@ import { logoutCustomers } from "../customer/customerSlice";
 import ChangePassword from "./ChangePassword";
 import { IoMdUnlock } from "react-icons/io";
 import { logoutUsers } from "../user/userSlice";
+import ChangeSMS from "./ChangeSMS.js";
 
 const drawerWidth = 225;
 const useStyles = makeStyles((theme) => {
@@ -37,6 +38,7 @@ const AppBarFile = (props) => {
   const dispatch = useDispatch()
   const activeUser = useSelector((state) => state.login.activeUser);
   const [showChangePassword, setShowChangePasswrd] = useState(false)
+  const [showSMS, setShowSMS] = useState(false)
   const [show, setShow] = useState(false)
   
   const classes = useStyles();
@@ -64,12 +66,14 @@ const AppBarFile = (props) => {
   const hideModal = () => {
     setShow(false)
     setShowChangePasswrd(false)
+    setShowSMS(false)
   }
 
   return (
 
     <>
       {show && <EditProfile user = {activeUser} hideModal = {hideModal} logoutHandler = {logoutHandler}/>}
+      {showSMS && <ChangeSMS user = {activeUser} hideModal = {hideModal} />}
       {showChangePassword && <ChangePassword user = {activeUser} hideModal = {hideModal}
       logoutHandler = {logoutHandler}/>}
       <div style = {{
@@ -118,6 +122,13 @@ const AppBarFile = (props) => {
             <IoMdUnlock  fontSize="medium" style={{color: "black"}}/>
           </ListItemIcon>
           Bedel Pin-ka
+        </MenuItem>
+
+        <MenuItem onClick={()=> setShowSMS(true)}>
+          <ListItemIcon>
+            <IoMdUnlock  fontSize="medium" style={{color: "black"}}/>
+          </ListItemIcon>
+         Change SMS
         </MenuItem>
 
         <MenuItem onClick = {logoutHandler}>

@@ -78,7 +78,6 @@ const SendSMS = () => {
 
   let filteredCustomers = []
   customers?.map(customer => {
-    console.log(customer)
     if (customer?.balance <= 0) return
     if (selectedZone && customer?.zone?._id != selectedZone?.value) return 
     filteredCustomers.push(customer)
@@ -96,23 +95,25 @@ const SendSMS = () => {
   }
 
 
-  const handleSendSMS = () => {
+  const handleSendSMS = async () => {
     setLoading(true)
-    const customersToSendSMS = customers.filter((customer) =>
+    const customersToSendSMS = await customers.filter((customer) =>
       selectedCustomers.includes(customer._id)
     );
 
-    const updatedCustomers = customersToSendSMS.map((customer) => ({
-      ...customer,
-      customerType: 'deynle',
-    }));
+    console.log(customersToSendSMS)
+
+    // const updatedCustomers = await customersToSendSMS.map((customer) => ({
+    //   ...customer,
+    //   customerType: 'deynle',
+    // }));
 
     axios
       .post(
         `${constants.baseUrl}/sms/send-custom-business-sms`,
         {
           "businessId": activeUser?.business?._id,
-          "customers": updatedCustomers,
+          "customers": customersToSendSMS,
           "message": customCheck && text
           },
         {
@@ -129,6 +130,7 @@ const SendSMS = () => {
       })
       .catch((err) => {
         setLoading(false)
+        console.log(err)
         alert(err?.response?.data?.message);
         setSelectedCustomers([])
       });

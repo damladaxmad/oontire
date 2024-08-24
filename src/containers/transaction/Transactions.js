@@ -10,13 +10,16 @@ import axios from "axios";
 import { addTransaction, deleteTransaction, setTransactions, updateTransaction } from "./transactionSlice";
 import TransactionForm from "./TransactionForm";
 import io from 'socket.io-client';
+import FormDeen from "./FormDeen";
 
 const Transactions = ({ instance, client, url, hideTransactions, }) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [type, setType] = useState(null)
+    const [kind, setKind] = useState('')
     const [update, setUpdate] = useState(false)
     const [showForm, setShowForm] = useState(false)
+    const [showFormDeen, setShowFormDeen] = useState(false)
     const [transaction, setTransaction] = useState(null)
     const token = useSelector(state => state.login.token)
     const { business } = useSelector(state => state?.login?.activeUser)
@@ -181,11 +184,19 @@ const Transactions = ({ instance, client, url, hideTransactions, }) => {
     return (
         <>
 
-            {showForm && <TransactionForm type={type} instance={instance}
+            {showForm && <TransactionForm type={type} kind = {kind} instance={instance}
              client={client}
                 update={update} transaction={transaction}
                 hideModal={() => {
+                    setKind("")
                     setShowForm(false)
+                    setUpdate(false)
+                }} />}
+            {showFormDeen && <FormDeen type={type} instance={instance}
+             client={client}
+                update={update} transaction={transaction}
+                hideModal={() => {
+                    setShowFormDeen(false)
                     setUpdate(false)
                 }} />}
 
@@ -207,9 +218,24 @@ const Transactions = ({ instance, client, url, hideTransactions, }) => {
                         }} />
 
                     <CustomButton bgColor={constants.pColor}
-                        text="Deen Cusub" width="150px"
+                        text="Invoice" width="150px"
                         onClick={() => {
                             setType("deen")
+                            setShowForm(true)
+                        }} />
+                    <CustomButton bgColor= "green"
+                        text="Deen" width="150px"
+                        onClick={() => {
+                            setType("deen")
+                            setShowFormDeen(true)
+                        }} />
+
+<CustomButton bgColor="white"
+                        color="black" width="150px"
+                        text="Discount"
+                        onClick={() => {
+                            setType("bixin")
+                            setKind("discount")
                             setShowForm(true)
                         }} />
 
@@ -292,11 +318,14 @@ const Transactions = ({ instance, client, url, hideTransactions, }) => {
                     background: constants.backdropColor,
                 }}
                 onRowClick={(e, rowData) => {
-                    const lastIndex = rowData?.length - 1;
-                    console.log(e)
-                    console.log(rowData.tableData)
-                    const isLastRow = rowData.tableData.id === lastIndex;
-                    if (isLastRow) console.log("it is")
+                    if (rowData?.aqrisHore == rowData?.aqrisDanbe && rowData?.transactionType == "charge") {
+                            setTransaction(rowData)
+                            setUpdate(true)
+                            setShowFormDeen(true)
+                            return
+                    }
+                        
+              
                     setTransaction(rowData)
                     setUpdate(true)
                     setShowForm(true)

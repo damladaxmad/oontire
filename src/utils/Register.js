@@ -81,6 +81,7 @@ hideModal, onUpdate}) => {
         expenseType: update ? instance?.expenseType : "",
         houseNo: update ? instance?.houseNo : "",
         aqrisHore: update ? instance?.aqrisHore : "",
+        rate: update ? instance?.rate : "",
         damiinName: update ? instance?.damiinName : "",
         damiinPhone: update ? instance?.damiinPhone : "",
         username: update && name == "User" ? instance?.username : "",

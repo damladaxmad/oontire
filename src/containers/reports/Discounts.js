@@ -12,7 +12,7 @@ import { setZoneDataFetched, setZones } from "../zone/zoneSlice";
 import axios from "axios";
 import moment from "moment";
 
-const LacagQabasho = ({ name, type }) => {
+const Discounts = ({ name, type }) => {
   const { business } = useSelector((state) => state.login.activeUser);
   const imageUrl = `https://firebasestorage.googleapis.com/v0/b/deentire-application.appspot.com/o/LOGO%2Fliibaan.jpeg?alt=media&token=f5b0b3e7-a5e0-4e0d-b3d2-20a920f97fde`;
   let today = new Date();
@@ -77,13 +77,13 @@ const LacagQabasho = ({ name, type }) => {
 
   let totalTransactions = 0;
   transactions?.map((t) => {
-    if (t?.transactionType == "discount") return
+    if (t?.transactionType != "discount") return
     totalTransactions += t.credit;
   });
 
   let newTransactions = []
   transactions?.map(t => {
-    if (t.transactionType == "discount") return
+    if (t.transactionType != "discount") return
     newTransactions?.push(t)
   })
 
@@ -133,7 +133,7 @@ const LacagQabasho = ({ name, type }) => {
       }}
     >
       <PrintableTableComponent columns={columns} data={newTransactions} imageUrl={imageUrl} 
-            reportTitle = {`Lacag Qabasho Report (${moment(startDate).format('YYYY-MM-DD')} - 
+            reportTitle = {`Discount Report (${moment(startDate).format('YYYY-MM-DD')} - 
             ${moment(endDate).format('YYYY-MM-DD')})`}> 
             <div style = {{marginTop: "10px"}}>  
                 <Typography style = {{ fontSize: "16px"}}>  TOTAL: 
@@ -150,7 +150,7 @@ const LacagQabasho = ({ name, type }) => {
             }}
           >
             {" "}
-            Lacag Qabasho Report
+            Discount Report
           </Typography>
           <Typography
             style={{
@@ -161,7 +161,7 @@ const LacagQabasho = ({ name, type }) => {
             {" "}
             {loading
               ? "loading..."
-              : `${transactions?.length} transactions`}
+              : `${newTransactions?.length} transactions`}
           </Typography>
         </div>
 
@@ -237,4 +237,4 @@ const LacagQabasho = ({ name, type }) => {
   );
 };
 
-export default LacagQabasho;
+export default Discounts;

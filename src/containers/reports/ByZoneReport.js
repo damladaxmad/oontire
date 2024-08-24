@@ -9,6 +9,7 @@ import useReadData from "../../hooks/useReadData";
 import { constants } from "../../Helpers/constantsFile";
 import { useState } from "react";
 import { setZoneDataFetched, setZones } from "../zone/zoneSlice";
+import ZonePrintTable from "./ZonePrintTable";
 
 const ByZoneReport = ({name, type}) => {
     const customers = useSelector(state => state.customers.customers).map(customer => ({ ...customer }));
@@ -37,19 +38,40 @@ const ByZoneReport = ({name, type}) => {
         realCustomers.push(customer);
         customerTotal += customer.balance;
     });
-
     const columns = [
         { title: "No", field: "houseNo", defaultSort: "asc" },
-        { title: "Full Name", field: "name", render: (data) =>                 <Typography style={{ }}> {data?.name?.substring(0, 46)}
-              {data?.name?.length <= 17 ? null : "..."}</Typography>,
-            cellStyle: { whiteSpace: 'nowrap' } },
-        { title: "Phone", field: "phone", },
-        { title: "A.Hore", field: "aqrisHore" },
-        { title: "Balance", field: "balance" },
+        { 
+            title: "Full Name", 
+            field: "name", 
+            width: "10%",  // Increase the width
+            render: (data) => (
+                <Typography style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                    {data?.name?.length > 24 ? `${data.name?.toLowerCase().substring(0, 24)}...` : data.name?.toLowerCase()}
+                </Typography>
+            )
+        },
+        { title: "Phone", field: "phone", width: "15%" },  // Adjust widths to fit content
+        { title: "A.Hore", field: "aqrisHore", width: "15%" },
+        { title: "A.Danb", field: "aqrisDanbe", width: "15%" },
+        { 
+            title: "Cost", 
+            field: "cost", 
+            render: rowData => <p>{(rowData?.aqrisHore - rowData?.aqrisDanbe) * (rowData?.rate || 1.5)}</p>,
+            width: "15%"
+        },
+        { 
+            title: "Reesto", 
+            field: "cost", 
+            render: rowData => <p>{rowData?.balance - (rowData?.aqrisHore - rowData?.aqrisDanbe) * (rowData?.rate || 1.5)}</p>,
+            width: "15%"
+        },
+        { title: "Balance", field: "balance", width: "20%" },
     ];
+    
 
     const handlePrint = useReactToPrint({
         content: () => document.querySelector('.printable-table'),
+        documentTitle: `Zone Report (${selectedZone ? realCustomers[0]?.zone?.zoneName : "All"})`
     });
 
     const balanceFilterOptions = [
@@ -67,13 +89,13 @@ const ByZoneReport = ({name, type}) => {
             flexDirection: "column",
             width: "100%"
         }}>
-            <PrintableTableComponent columns={columns} data={realCustomers} imageUrl={imageUrl}
+            <ZonePrintTable columns={columns} data={realCustomers} imageUrl={imageUrl}
                 reportTitle={`Zone Report (${selectedZone ? realCustomers[0]?.zone?.zoneName : "All"})`}>
                 <div style={{ marginTop: "10px" }}>
                     <Typography style={{ fontSize: "16px" }}>  TOTAL:
                         <span style={{ fontWeight: "bold", fontSize: "18px" }}> ${customerTotal} </span></Typography>
                 </div>
-            </PrintableTableComponent>
+            </ZonePrintTable>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
                 <div>
                     <Typography style={{ fontWeight: "bold", fontSize: "20px" }}> Zones Report</Typography>

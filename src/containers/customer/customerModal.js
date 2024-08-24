@@ -6,5 +6,6 @@ export const fields = [
     { label: "Aqris Hore", type: "text", name: "aqrisHore" },
     { label: "Enter Damiin Name", type: "text", name: "damiinName" },
     { label: "Enter Damiin Phone", type: "text", name: "damiinPhone" },
+    { label: "Enter Rate", type: "number", name: "rate" },
     { label: "Enter Balance", type: "text", name: "reesto" },
   ];

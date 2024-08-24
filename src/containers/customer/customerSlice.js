@@ -51,6 +51,13 @@ export const customerSlice = createSlice({
         state.customers[index].aqrisHore = newAqrisHore;
       }
     },
+    updateCustomerAqrisDanbe: (state, action) => {
+      const { customerId, newAqrisDanbe } = action.payload;
+      const index = state.customers.findIndex(customer => customer._id === customerId);
+      if (index !== -1) {
+        state.customers[index].aqrisDanbe = newAqrisDanbe;
+      }
+    },
 
     updateCustomerZone: (state, action) => {
       const { customerId, newZone } = action.payload;
@@ -73,6 +80,6 @@ export const customerSlice = createSlice({
 });
 
 export const { setCustomers, addCustomer, deleteCustomer, updateCustomer, updateCustomerBalance, 
-  updateCustomerSocketBalance, setCustomerDataFetched, updateCustomerAqrisHore, updateCustomerZone, logoutCustomers } = customerSlice.actions;
+  updateCustomerSocketBalance, setCustomerDataFetched, updateCustomerAqrisHore, updateCustomerAqrisDanbe, updateCustomerZone, logoutCustomers } = customerSlice.actions;
 
 export default customerSlice.reducer;
