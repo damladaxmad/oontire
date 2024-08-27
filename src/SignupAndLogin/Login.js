@@ -7,7 +7,7 @@ import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { makeStyles } from '@material-ui/core/styles';
 import { constants } from "../Helpers/constantsFile";
-import { setActiveUser, setIsLogin, setToken } from "./loginSlice";
+import { setActiveUser, setBusiness, setIsLogin, setToken } from "./loginSlice";
 import CustomButton from "../reusables/CustomButton";
 
 const useStyles = makeStyles((theme) => ({
@@ -54,6 +54,7 @@ const Login = (props) => {
         version: "notify_version"
       });
 
+      dispatch(setBusiness(response.data?.data?.user?.business))
       dispatch(setActiveUser(response.data?.data?.user));
       dispatch(setToken(`Bearer ${response?.data?.token}`));
       dispatch(setIsLogin(true));

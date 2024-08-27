@@ -16,7 +16,7 @@ const subDivStyle = {
 }
 
 export default function BusinessSection() {
-  const { business } = useSelector((state) => state.login.activeUser);
+  const business = useSelector((state) => state.login.business);
   const [anchorEl, setAnchorEl] = useState(null)
   const open = Boolean(anchorEl);
   const handleClick = (event) => {

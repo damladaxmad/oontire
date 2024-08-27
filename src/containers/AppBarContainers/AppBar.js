@@ -12,6 +12,7 @@ import ChangePassword from "./ChangePassword";
 import { IoMdUnlock } from "react-icons/io";
 import { logoutUsers } from "../user/userSlice";
 import ChangeSMS from "./ChangeSMS.js";
+import UpdateSmsAndNumber from "./UpdateSmsAndNumber.js";
 
 const drawerWidth = 225;
 const useStyles = makeStyles((theme) => {
@@ -73,7 +74,7 @@ const AppBarFile = (props) => {
 
     <>
       {show && <EditProfile user = {activeUser} hideModal = {hideModal} logoutHandler = {logoutHandler}/>}
-      {showSMS && <ChangeSMS user = {activeUser} hideModal = {hideModal} />}
+      {showSMS && <UpdateSmsAndNumber open = {showSMS} user = {activeUser} handleClose = {hideModal} />}
       {showChangePassword && <ChangePassword user = {activeUser} hideModal = {hideModal}
       logoutHandler = {logoutHandler}/>}
       <div style = {{
@@ -128,7 +129,7 @@ const AppBarFile = (props) => {
           <ListItemIcon>
             <IoMdUnlock  fontSize="medium" style={{color: "black"}}/>
           </ListItemIcon>
-         Change SMS
+         Change SMS & Phone
         </MenuItem>
 
         <MenuItem onClick = {logoutHandler}>
